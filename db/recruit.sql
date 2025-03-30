@@ -396,6 +396,7 @@ CREATE TABLE `position` (
 `quantity` int DEFAULT NULL COMMENT '招聘人数',
 `workCity` varchar(32) DEFAULT NULL COMMENT '工作城市',
 `salaryUp` int DEFAULT NULL COMMENT '最高薪资',
+
 `salaryDown` int DEFAULT NULL COMMENT '最低薪资',
 `releaseDate` datetime DEFAULT NULL COMMENT '发布日期',
 `statePub` int DEFAULT NULL COMMENT '发布状态：0-未发布 1-已发布 2-已下架',
