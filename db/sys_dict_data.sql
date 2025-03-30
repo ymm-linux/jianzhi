@@ -11,7 +11,7 @@
  Target Server Version : 80041
  File Encoding         : 65001
 
- Date: 29/03/2025 23:27:55
+ Date: 30/03/2025 11:53:22
 */
 
 SET NAMES utf8mb4;
@@ -161,4 +161,11 @@ INSERT INTO `sys_dict_data` VALUES (656595470573637, 2, '日薪', 'Daily', 'sala
 INSERT INTO `sys_dict_data` VALUES (656595562623045, 0, '月薪', 'monthly', 'salary_type', NULL, 'primary', NULL, 'admin', '2025-03-20 10:34:13', '', '2025-03-20 10:34:30', NULL);
 INSERT INTO `sys_dict_data` VALUES (656596076597317, 0, '待处理', '0', 'feedback_status', NULL, 'danger', NULL, 'admin', '2025-03-20 10:36:19', '', '2025-03-20 10:36:25', NULL);
 INSERT INTO `sys_dict_data` VALUES (656596158099525, 1, '已处理', '1', 'feedback_status', NULL, 'success', NULL, 'admin', '2025-03-20 10:36:38', '', NULL, NULL);
-INSERT INTO `sys_dict_data` VALUES (656596575301701, 0, '待审核', '0', 'apply_status', NULL, 'primary', NULL, 'ad
+INSERT INTO `sys_dict_data` VALUES (656596575301701, 0, '待审核', '0', 'apply_status', NULL, 'primary', NULL, 'admin', '2025-03-20 10:38:20', '', NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (656596642881605, 0, '已通过', '1', 'apply_status', NULL, 'success', NULL, 'admin', '2025-03-20 10:38:37', '', NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (656596689559621, 0, '已拒绝', '2', 'apply_status', NULL, 'danger', NULL, 'admin', '2025-03-20 10:38:48', '', NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (656596933062725, 0, '开放', '0', 'recruitment_status', NULL, 'primary', NULL, 'admin', '2025-03-20 10:39:48', '', NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (656596985471045, 0, '招满', '1', 'recruitment_status', NULL, 'info', NULL, 'admin', '2025-03-20 10:40:00', '', NULL, NULL);
+INSERT INTO `sys_dict_data` VALUES (656597043478597, 0, '延期', '2', 'recruitment_status', NULL, 'warning', NULL, 'admin', '2025-03-20 10:40:15', '', NULL, NULL);
+
+SET FOREIGN_KEY_CHECKS = 1;
