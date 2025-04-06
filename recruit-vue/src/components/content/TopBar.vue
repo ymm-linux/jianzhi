@@ -58,8 +58,9 @@ export default {
     return{
       tabList:[
         {name:'首页',icon:'el-icon-s-opportunity',path:'/user/index'},
-        {name:'招聘',icon:'el-icon-position',path:'/user/recruitment'},
-        {name:'个人中心',icon:'el-icon-position',path:'/personal'},
+        {name:'招聘',icon:'el-icon-s-position',path:'/user/recruitment'},
+        {name:'薪资',icon:'el-icon-s-opportunity',path:'/user/recruitment'},
+        {name:'个人中心',icon:'el-icon-s-position',path:'/personal'},
       ],
       userName: "未登录",
       isCompany: false,

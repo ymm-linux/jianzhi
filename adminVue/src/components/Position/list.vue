@@ -16,7 +16,7 @@
           label="编辑日期"
           width="180">
         <template slot-scope="scope">
-          {{scope.row.releaseDate}}
+          {{ scope.row.releaseDate | formatDate }}
         </template>
       </el-table-column>
       <el-table-column
@@ -104,7 +104,7 @@
         }
       },
       created: function () {
-        this.userinfo = JSON.parse(sessionStorage.getItem("user")) 
+        this.userinfo = JSON.parse(sessionStorage.getItem("user"))
         this.listCategory()
         this.listEducation()
         this.getListData()
@@ -130,7 +130,7 @@
           .then(res=>{
             this.list = res.data
           })
-          
+
         },
         handleSizeChange(val) {
           this.pagesize = val;
@@ -158,14 +158,14 @@
             .catch(function(error) {
               console.log(error);
             });
-         
+
           }).catch(() => {
             this.$message({
               type: 'info',
               message: '已取消删除'
-            });          
+            });
           });
- 
+
         },
         handleEdit(index,row){
           localStorage.setItem("goodsInfo",JSON.stringify(row))

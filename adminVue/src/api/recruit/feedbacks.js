@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request  from '../request'
 
 // 查询投诉与反馈列表
 export function listFeedbacks(query) {

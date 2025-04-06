@@ -66,6 +66,14 @@ const routes = [
           {
             path:'postResume',
             component:()=>import("../views/Company/Recruitment/postResume")
+          },
+          {
+            path:'salaries',
+            component:()=>import("../views/Company/Recruitment/salaries")
+          },
+          {
+            path:'commission',
+            component:()=>import("../views/Company/Recruitment/commission")
           }
         ]
       }

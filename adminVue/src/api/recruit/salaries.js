@@ -1,4 +1,5 @@
-import request from '@/utils/request'
+import request  from '../request'
+import { defineComponent } from 'vue'
 
 // 查询工时薪资列表
 export function listSalaries(query) {
@@ -8,6 +9,16 @@ export function listSalaries(query) {
     params: query
   })
 }
+
+// 查询在岗人员列表
+export function listWorkers(query) {
+  return request({
+    url: '/recruit/salaries/listWorkers',
+    method: 'get',
+    params: query
+  })
+}
+
 
 // 查询工时薪资详细
 export function getSalaries(id) {

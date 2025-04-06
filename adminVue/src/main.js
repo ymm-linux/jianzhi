@@ -9,6 +9,23 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import Vuex from 'vuex'
 import 'font-awesome/css/font-awesome.min.css'
+import moment from 'moment';
+
+Vue.config.productionTip = false;
+
+// 创建全局过滤器，格式化时间
+Vue.filter('formatDate', function(value) {
+  if (value) {
+    return moment(String(value)).format('YYYY-MM-DD HH:mm:ss');
+  }
+});
+
+Vue.filter('formatDay', function(value) {
+  if (value) {
+    return moment(String(value)).format('YYYY-MM-DD');
+  }
+});
+
 Vue.config.productionTip = false
 import echarts from 'echarts';
 Vue.prototype.$echarts = echarts;

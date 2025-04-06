@@ -52,6 +52,11 @@
           >
         </el-date-picker>
       </el-form-item>
+      <el-form-item
+              prop="commission"
+              label="佣金（元）">
+              <el-input v-model="companyForm.commission" />
+            </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit()">提交</el-button>
         <el-button @click="$router.back()">取消</el-button>
@@ -85,7 +90,7 @@
             });
             this.$router.back()
             return
-          } 
+          }
           this.$message({
             type: 'error',
             message: '修改失败!'

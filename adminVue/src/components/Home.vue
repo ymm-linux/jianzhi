@@ -23,7 +23,7 @@
       <el-col :span="24" class="main">
         <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="collapsed">
           <el-menu-item index="1">
-            <span slot="title" @click="pushRoute(1)">招聘信息</span>
+            <span slot="title" @click="pushRoute(1)">岗位列表</span>
           </el-menu-item>
           <el-menu-item index="2">
             <span slot="title" @click="pushRoute(2)">应聘记录</span>
@@ -41,10 +41,16 @@
             <span slot="title" @click="pushRoute(6)">企业用户</span>
           </el-menu-item>
           <el-menu-item index="8"  >
-            <span slot="title" @click="pushRoute(7)">岗位管理</span>
+            <span slot="title" @click="pushRoute(7)">投诉反馈</span>
           </el-menu-item>
           <el-menu-item index="9"  >
-            <span slot="title" @click="pushRoute(8)">友情链接管理</span>
+            <span slot="title" @click="pushRoute(8)">公告管理</span>
+          </el-menu-item>
+          <el-menu-item index="9"  >
+            <span slot="title" @click="pushRoute(9)">工时薪资</span>
+          </el-menu-item>
+          <el-menu-item index="9"  >
+            <span slot="title" @click="pushRoute(10)">在岗人员</span>
           </el-menu-item>
 
         </el-menu>
@@ -115,10 +121,16 @@ export default {
           this.$router.push({path:'/company/list'});
           break;
         case 7:
-          this.$router.push({path:'/boss/applications'});
+          this.$router.push({path:'/recruit/feedbacks'});
           break;
         case 8:
-          this.$router.push({path:'/url/list'});
+          this.$router.push({path:'/recruit/notice'});
+          break;
+        case 9:
+          this.$router.push({path:'/recruit/salaries'});
+          break;
+        case 10:
+          this.$router.push({path:'/recruit/workers'});
           break;
       }
     },

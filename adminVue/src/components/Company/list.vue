@@ -54,9 +54,15 @@
         label="地址"
         show-overflow-tooltip
       />
+      <el-table-column
+        align="center"
+        prop="commission"
+        label="佣金（元）"
+        show-overflow-tooltip
+      />
       <el-table-column align="center" prop="createTime" label="注册时间">
         <template slot-scope="scope">
-          <span>{{ getDate(scope.row.createTime) }}</span>
+          {{ scope.row.createTime | formatDay }}
         </template>
       </el-table-column>
       <el-table-column width="155" label="操作" align="center">

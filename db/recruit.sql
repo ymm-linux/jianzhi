@@ -13,7 +13,8 @@ CREATE TABLE `application` (
 `hrId` int DEFAULT NULL COMMENT 'HR ID',
 `reply` varchar(255) DEFAULT NULL COMMENT 'HR回复内容'
 ,`interviewTime` datetime DEFAULT NULL comment '面试时间'
-, `interviewResult`  datetime DEFAULT NULL comment '面试结果'
+, `interviewResult`  varchar(10) DEFAULT NULL comment '面试结果'
+, `workTime`  datetime DEFAULT NULL comment '入职时间'
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC COMMENT='职位申请表';
 -- Data of table `application` --
 INSERT INTO `application` (`applicationId`, `applicationState`, `recentTime`, `resumeId`, `positionId`, `hrId`, `reply`) VALUES
@@ -344,7 +345,7 @@ INSERT INTO `friendurl` (`urlId`, `url`, `name`) VALUES
 (9, 'https://blog.csdn.net/', 'CSDN网站'),
 (17, 'https://www.cnblogs.com/', '博客园');
 
--- Table structure for table `hr` --
+-- Table structure for table `hr`
 DROP TABLE IF EXISTS `hr`;
 CREATE TABLE `hr` (
 `hrId` int NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'HR ID',
@@ -357,18 +358,19 @@ CREATE TABLE `hr` (
 `companyAddress` varchar(255) DEFAULT NULL COMMENT '公司地址',
 `createTime` date DEFAULT NULL COMMENT '创建时间',
 `hr` varchar(255) DEFAULT NULL COMMENT 'HR标识'
+,`commission` DECIMAL(6,2) DEFAULT 1 COMMENT '佣金'
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC COMMENT='HR信息表';
 -- Data of table `hr` --
-INSERT INTO `hr` (`hrId`, `hrMobile`, `hrPassword`, `hrName`, `hrEmail`, `description`, `companyName`, `companyAddress`, `createTime`, `hr`) VALUES
-(3, '12345678901', '4QrcOUm6Wau+VuBX8g+IPg==', '张三', '2890706289@qq.com', 'estet', '饿了么', 'test', '2025-01-21', '张三'),
-(4, '01234567890', '4QrcOUm6Wau+VuBX8g+IPg==', '我', 'eleba@ele.com', '你饿了么', '饿了么', '地球的某个角落', '2025-01-21', '我'),
-(15, '12345678901', '4QrcOUm6Wau+VuBX8g+IPg==', 'qiye', 'qiye@test.com', '测试的公司', 'qiye', '广州市', '2025-01-21', 'qiye'),
-(21, '12345678901', '4QrcOUm6Wau+VuBX8g+IPg==', '马化腾', '1005202347@qq.com', '无', '腾讯', '广东省梅州市', '2025-01-21', '马化腾'),
-(22, '12345678901', '4QrcOUm6Wau+VuBX8g+IPg==', '测试', 'test@qq.com', '简介', '测试', '测试的地址', '2025-01-21', '测试'),
-(24, '1361085641', '4QrcOUm6Wau+VuBX8g+IPg==', '雷军', '123456@qq.com', '小米是一家以手机、智能硬件和IoT平台为核心的互联网公司，以智能手机、智能电视、笔记本等丰富的产品与服务。致力于让全球每个人都能享受科技带来的美好生活', '小米', '广东省广州市', '2025-01-21', '雷军'),
-(26, '44312358', '4QrcOUm6Wau+VuBX8g+IPg==', '李秉喆', '325692@163.com', '三星集团(SAMSUNG)是韩国最大的跨国企业集团，三星集团包括众多的国际下属企业，旗下子公司有：三星电子、三星物产、三星人寿保险等，业务涉及电子、金融、机械、化学等众多领域。三星集团成立于1938年，由李秉喆创办。三星集团是家族企业，李氏家族世袭，旗下各个三星产业均为家族产业，并由家族中的其他成员管理。 [1-2]', '三星', '韩国京畿道城南市盆唐区书岘洞263号三星广场大厦', '2025-01-21', '李秉喆'),
-(27, '18888888888', '4QrcOUm6Wau+VuBX8g+IPg==', '张经理', '123@163.com', '软件开发', '科技公司', '江苏省苏州市工业园区', '2025-01-21', '张经理'),
-(28, NULL, '4QrcOUm6Wau+VuBX8g+IPg==', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `hr` (`hrId`, `hrMobile`, `hrPassword`, `hrName`, `hrEmail`, `description`, `companyName`, `companyAddress`, `createTime`, `hr`,`commission`) VALUES
+(3, '12345678901', '4QrcOUm6Wau+VuBX8g+IPg==', '张三', '2890706289@qq.com', 'estet', '饿了么', 'test', '2025-01-21', '张三',1),
+(4, '01234567890', '4QrcOUm6Wau+VuBX8g+IPg==', '我', 'eleba@ele.com', '你饿了么', '饿了么', '地球的某个角落', '2025-01-21', '我',2),
+(15, '12345678901', '4QrcOUm6Wau+VuBX8g+IPg==', 'qiye', 'qiye@test.com', '测试的公司', 'qiye', '广州市', '2025-01-21', 'qiye',5),
+(21, '12345678901', '4QrcOUm6Wau+VuBX8g+IPg==', '马化腾', '1005202347@qq.com', '无', '腾讯', '广东省梅州市', '2025-01-21', '马化腾',1),
+(22, '12345678901', '4QrcOUm6Wau+VuBX8g+IPg==', '测试', 'test@qq.com', '简介', '测试', '测试的地址', '2025-01-21', '测试',1),
+(24, '1361085641', '4QrcOUm6Wau+VuBX8g+IPg==', '雷军', '123456@qq.com', '小米是一家以手机、智能硬件和IoT平台为核心的互联网公司，以智能手机、智能电视、笔记本等丰富的产品与服务。致力于让全球每个人都能享受科技带来的美好生活', '小米', '广东省广州市', '2025-01-21', '雷军',1),
+(26, '44312358', '4QrcOUm6Wau+VuBX8g+IPg==', '李秉喆', '325692@163.com', '三星集团(SAMSUNG)是韩国最大的跨国企业集团，三星集团包括众多的国际下属企业，旗下子公司有：三星电子、三星物产、三星人寿保险等，业务涉及电子、金融、机械、化学等众多领域。三星集团成立于1938年，由李秉喆创办。三星集团是家族企业，李氏家族世袭，旗下各个三星产业均为家族产业，并由家族中的其他成员管理。 [1-2]', '三星', '韩国京畿道城南市盆唐区书岘洞263号三星广场大厦', '2025-01-21', '李秉喆',1),
+(27, '18888888888', '4QrcOUm6Wau+VuBX8g+IPg==', '张经理', '123@163.com', '软件开发', '科技公司', '江苏省苏州市工业园区', '2025-01-21', '张经理',1),
+(28, NULL, '4QrcOUm6Wau+VuBX8g+IPg==', NULL, NULL, NULL, NULL, NULL, NULL, NULL,1);
 
 -- Table structure for table `manager` --
 DROP TABLE IF EXISTS `manager`;
@@ -817,7 +819,7 @@ DROP TABLE IF EXISTS `feedbacks`;
 CREATE TABLE `feedbacks`  (
   `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` bigint(0) NOT NULL COMMENT '关联用户，可以是企业或学生',
-  `user_type` varchar(2) NOT NULL COMMENT '0、企业hr，1、学生',
+  `user_type` varchar(10) NOT NULL COMMENT '企业hr，学生user',
   `content` varchar(2000)  NOT NULL COMMENT '投诉或反馈内容',
   `status` varchar(2)  DEFAULT '0' COMMENT '处理状态 0、待处理，1、已处理',
   `send_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发起时间',
@@ -826,6 +828,10 @@ CREATE TABLE `feedbacks`  (
   `reviewer_time` timestamp(0) null COMMENT '反馈时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1  COMMENT = '投诉与反馈表' ROW_FORMAT = Dynamic;
+
+INSERT INTO `recruit`.`feedbacks`(`id`, `user_id`, `user_type`, `content`, `status`, `send_time`, `reviewer_content`, `reviewer_id`, `reviewer_time`) VALUES (1, 17, 'user', 'xxx企业岗位为虚假招聘', '0', '2025-03-31 18:39:13', NULL, NULL, NULL);
+INSERT INTO `recruit`.`feedbacks`(`id`, `user_id`, `user_type`, `content`, `status`, `send_time`, `reviewer_content`, `reviewer_id`, `reviewer_time`) VALUES (2, 19, 'user', 'yyy企业岗位为虚假招聘', '0', '2025-03-31 20:06:17', NULL, NULL, NULL);
+INSERT INTO `recruit`.`feedbacks`(`id`, `user_id`, `user_type`, `content`, `status`, `send_time`, `reviewer_content`, `reviewer_id`, `reviewer_time`) VALUES (3, 1, 'manager', 'xxx学生简历造假', '0', '2025-03-31 20:06:52', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_log

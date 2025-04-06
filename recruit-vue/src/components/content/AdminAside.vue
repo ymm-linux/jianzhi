@@ -19,7 +19,9 @@ export default {
     return{
       aside:[
         {name:'岗位管理',icon:'el-icon-notebook-1',path:'/company/jobManage'},
-        {name:'投递管理',icon:'el-icon-setting',path:'/company/postResume'}
+        {name:'投递管理',icon:'el-icon-setting',path:'/company/postResume'},
+        {name:'薪资管理',icon:'el-icon-setting',path:'/company/salaries'},
+        {name:'佣金统计',icon:'el-icon-setting',path:'/company/commision'}
       ],
     }
   },

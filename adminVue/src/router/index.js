@@ -132,13 +132,13 @@ export default new Router({
       component:()=>import("@/components/Home"),
       children: [
         {
-          path: '/user',
+          path: 'user',
           component:()=>import("@/components/nav3/User"),
           name: '求职用户'
         },
         {
-          path: '/company',
-          component:()=>import("@/components/nav3/User"),
+          path: 'company',
+          component:()=>import("@/components/nav3/hr"),
           name: '企业用户'
         }
       ]
@@ -148,10 +148,43 @@ export default new Router({
       component:()=>import("@/components/Home"),
       children: [
         {
-          path: '/boss/applications',
-          component:()=>import("@/views/boss/applications"),
-          name: '岗位管理'
+          path: 'recruit/feedbacks',
+          component:()=>import("@/components/feedbacks/index"),
+          name: '投诉反馈'
         }
+      ]
+    },
+    {
+      path: '/',
+      component:()=>import("@/components/Home"),
+      children: [
+        {
+          path: 'recruit/notice',
+          component:()=>import("@/components/notice"),
+          name: '公告管理'
+        }
+      ]
+    },
+   {
+        path: '/',
+        component:()=>import("@/components/Home"),
+        children: [
+          {
+            path: 'recruit/salaries',
+            component:()=>import("@/components/salaries"),
+            name: '工时薪资'
+          }
+        ]
+      },
+    {
+      path: '/',
+      component:()=>import("@/components/Home"),
+      children: [
+       {
+         path: 'recruit/workers',
+         component:()=>import("@/components/workers"),
+         name: '在岗员工'
+       }
       ]
     },
     {

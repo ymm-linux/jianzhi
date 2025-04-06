@@ -1,36 +1,44 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="关联用户，可以是企业或学生" prop="userId">
+      <el-form-item label="发送者ID" prop="senderId">
         <el-input
-          v-model="queryParams.userId"
-          placeholder="请输入关联用户，可以是企业或学生"
+          v-model="queryParams.senderId"
+          placeholder="请输入发送者ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="发起时间" prop="sendTime">
+      <el-form-item label="接收者ID" prop="receiverId">
+        <el-input
+          v-model="queryParams.receiverId"
+          placeholder="请输入接收者ID"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="是否已读" prop="readFlag">
+        <el-input
+          v-model="queryParams.readFlag"
+          placeholder="请输入是否已读"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="创建时间" prop="sendTime">
         <el-date-picker clearable
           v-model="queryParams.sendTime"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择发起时间">
+          placeholder="请选择创建时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="处理人ID，管理员" prop="reviewerId">
-        <el-input
-          v-model="queryParams.reviewerId"
-          placeholder="请输入处理人ID，管理员"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="反馈时间" prop="reviewerTime">
+      <el-form-item label="修改时间" prop="readTime">
         <el-date-picker clearable
-          v-model="queryParams.reviewerTime"
+          v-model="queryParams.readTime"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择反馈时间">
+          placeholder="请选择修改时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -47,7 +55,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['recruit:feedbacks:add']"
+          v-hasPermi="['recruit:messages:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -58,7 +66,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['recruit:feedbacks:edit']"
+          v-hasPermi="['recruit:messages:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -69,7 +77,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['recruit:feedbacks:remove']"
+          v-hasPermi="['recruit:messages:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -79,29 +87,27 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['recruit:feedbacks:export']"
+          v-hasPermi="['recruit:messages:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="feedbacksList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="messagesList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="关联用户，可以是企业或学生" align="center" prop="userId" />
-      <el-table-column label="0、企业hr，1、学生" align="center" prop="userType" />
-      <el-table-column label="投诉或反馈内容" align="center" prop="content" />
-      <el-table-column label="处理状态 0、待处理，1、已处理" align="center" prop="status" />
-      <el-table-column label="发起时间" align="center" prop="sendTime" width="180">
+      <el-table-column label="发送者ID" align="center" prop="senderId" />
+      <el-table-column label="接收者ID" align="center" prop="receiverId" />
+      <el-table-column label="消息内容" align="center" prop="content" />
+      <el-table-column label="是否已读" align="center" prop="readFlag" />
+      <el-table-column label="创建时间" align="center" prop="sendTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.sendTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="反馈内容" align="center" prop="reviewerContent" />
-      <el-table-column label="处理人ID，管理员" align="center" prop="reviewerId" />
-      <el-table-column label="反馈时间" align="center" prop="reviewerTime" width="180">
+      <el-table-column label="修改时间" align="center" prop="readTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.reviewerTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.readTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -111,14 +117,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['recruit:feedbacks:edit']"
+            v-hasPermi="['recruit:messages:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['recruit:feedbacks:remove']"
+            v-hasPermi="['recruit:messages:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -132,35 +138,35 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改投诉与反馈对话框 -->
+    <!-- 添加或修改在线交流对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="关联用户，可以是企业或学生" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入关联用户，可以是企业或学生" />
+        <el-form-item label="发送者ID" prop="senderId">
+          <el-input v-model="form.senderId" placeholder="请输入发送者ID" />
         </el-form-item>
-        <el-form-item label="投诉或反馈内容">
+        <el-form-item label="接收者ID" prop="receiverId">
+          <el-input v-model="form.receiverId" placeholder="请输入接收者ID" />
+        </el-form-item>
+        <el-form-item label="消息内容">
           <editor v-model="form.content" :min-height="192"/>
         </el-form-item>
-        <el-form-item label="发起时间" prop="sendTime">
+        <el-form-item label="是否已读" prop="readFlag">
+          <el-input v-model="form.readFlag" placeholder="请输入是否已读" />
+        </el-form-item>
+        <el-form-item label="创建时间" prop="sendTime">
           <el-date-picker clearable
             v-model="form.sendTime"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="请选择发起时间">
+            placeholder="请选择创建时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="反馈内容">
-          <editor v-model="form.reviewerContent" :min-height="192"/>
-        </el-form-item>
-        <el-form-item label="处理人ID，管理员" prop="reviewerId">
-          <el-input v-model="form.reviewerId" placeholder="请输入处理人ID，管理员" />
-        </el-form-item>
-        <el-form-item label="反馈时间" prop="reviewerTime">
+        <el-form-item label="修改时间" prop="readTime">
           <el-date-picker clearable
-            v-model="form.reviewerTime"
+            v-model="form.readTime"
             type="date"
             value-format="yyyy-MM-dd"
-            placeholder="请选择反馈时间">
+            placeholder="请选择修改时间">
           </el-date-picker>
         </el-form-item>
       </el-form>
@@ -173,10 +179,10 @@
 </template>
 
 <script>
-import { listFeedbacks, getFeedbacks, delFeedbacks, addFeedbacks, updateFeedbacks } from "@/api/recruit/feedbacks";
+import { listMessages, getMessages, delMessages, addMessages, updateMessages } from "@/api/recruit/messages";
 
 export default {
-  name: "Feedbacks",
+  name: "Messages",
   data() {
     return {
       // 遮罩层
@@ -191,8 +197,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 投诉与反馈表格数据
-      feedbacksList: [],
+      // 在线交流表格数据
+      messagesList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -201,30 +207,28 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userId: null,
-        userType: null,
+        senderId: null,
+        receiverId: null,
         content: null,
-        status: null,
+        readFlag: null,
         sendTime: null,
-        reviewerContent: null,
-        reviewerId: null,
-        reviewerTime: null
+        readTime: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        userId: [
-          { required: true, message: "关联用户，可以是企业或学生不能为空", trigger: "blur" }
+        senderId: [
+          { required: true, message: "发送者ID不能为空", trigger: "blur" }
         ],
-        userType: [
-          { required: true, message: "0、企业hr，1、学生不能为空", trigger: "change" }
+        receiverId: [
+          { required: true, message: "接收者ID不能为空", trigger: "blur" }
         ],
         content: [
-          { required: true, message: "投诉或反馈内容不能为空", trigger: "blur" }
+          { required: true, message: "消息内容不能为空", trigger: "blur" }
         ],
         sendTime: [
-          { required: true, message: "发起时间不能为空", trigger: "blur" }
+          { required: true, message: "创建时间不能为空", trigger: "blur" }
         ],
       }
     };
@@ -233,11 +237,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询投诉与反馈列表 */
+    /** 查询在线交流列表 */
     getList() {
       this.loading = true;
-      listFeedbacks(this.queryParams).then(response => {
-        this.feedbacksList = response.rows;
+      listMessages(this.queryParams).then(response => {
+        this.messagesList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -251,14 +255,12 @@ export default {
     reset() {
       this.form = {
         id: null,
-        userId: null,
-        userType: null,
+        senderId: null,
+        receiverId: null,
         content: null,
-        status: null,
+        readFlag: null,
         sendTime: null,
-        reviewerContent: null,
-        reviewerId: null,
-        reviewerTime: null
+        readTime: null
       };
       this.resetForm("form");
     },
@@ -282,16 +284,16 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加投诉与反馈";
+      this.title = "添加在线交流";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getFeedbacks(id).then(response => {
+      getMessages(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改投诉与反馈";
+        this.title = "修改在线交流";
       });
     },
     /** 提交按钮 */
@@ -299,13 +301,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateFeedbacks(this.form).then(response => {
+            updateMessages(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addFeedbacks(this.form).then(response => {
+            addMessages(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -317,8 +319,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除投诉与反馈编号为"' + ids + '"的数据项？').then(function() {
-        return delFeedbacks(ids);
+      this.$modal.confirm('是否确认删除在线交流编号为"' + ids + '"的数据项？').then(function() {
+        return delMessages(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -326,9 +328,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('recruit/feedbacks/export', {
+      this.download('recruit/messages/export', {
         ...this.queryParams
-      }, `feedbacks_${new Date().getTime()}.xlsx`)
+      }, `messages_${new Date().getTime()}.xlsx`)
     }
   }
 };
