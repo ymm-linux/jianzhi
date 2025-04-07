@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{            //这里的key就是axios的baseURL
-        target: 'http://127.0.0.1:8090',    //访问域名
+        target: 'http://127.0.0.1:8084',    //访问域名
         changeOrigin: true,            //开启跨域
         pathRewrite:{  // 路径重写，
             '^/api': 'api'  // 替换target中的请求地址
@@ -28,7 +28,7 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */

@@ -35,7 +35,7 @@
     </el-table>
     <div
       v-show="checking"
-      style="display: flex; justify-content: center; align-items: center"
+      style="display: disabled; justify-content: center; align-items: center"
     >
       <div style="border: 1px solid #bfbfbf; width: 70%; margin: 40px">
         <el-form ref="userForm" :model="userForm" label-width="120px">
@@ -176,6 +176,7 @@ export default {
       delivers: [],
       jobList: [],
       checking: false,
+      showResume: false, // 新增：控制简历信息的显示与隐藏
       userForm: {
         avatar: 'default',
         nickname: '',
@@ -269,11 +270,16 @@ export default {
     },
     checkMsg(row) {
       this.checking = true
+      this.showResume = true // 隐藏简历信息
       // 获取信息
       getApplicMsg(row).then((res) => {
         this.userForm = res.data.user
         this.resumeform = res.data.resume
       })
+    },
+    handleBack() {
+      this.checking = false
+      this.showResume = false // 隐藏简历信息
     },
     getList() {
       this.jobList = []

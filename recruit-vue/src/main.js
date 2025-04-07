@@ -51,6 +51,9 @@ Vue.component("Message",Message)      //use引入页面刷新自动弹窗,原因
 Vue.prototype.$message=Message
 
 Vue.filter('formatDate',function (str){
+    if (!str) {
+      return '';
+    }
     let date=new Date(str)
     let y = date.getFullYear();
     let m = date.getMonth() + 1;

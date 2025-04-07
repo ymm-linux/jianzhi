@@ -187,6 +187,17 @@ export default new Router({
        }
       ]
     },
+   {
+      path: '/',
+      component:()=>import("@/components/Home"),
+      children: [
+        {
+          path: 'recruit/commission',
+          component:()=>import("@/components/commission/index"),
+          name: '佣金统计'
+        }
+      ]
+    },
     {
       path: '/',
       component:()=>import("@/components/Home"),

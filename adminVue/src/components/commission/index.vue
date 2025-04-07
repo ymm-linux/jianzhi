@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card" shadow="always">
     <div slot="header">
-      <span>工时薪资</span>
+      <span>佣金统计</span>
     </div>
     <el-table
       ref="multipleTable"
@@ -11,25 +11,11 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-     <el-table-column type="selection" width="55" align="center" />
-       <el-table-column label="岗位" align="center" prop="title" />
-       <el-table-column label="HR" align="center" prop="hrName" />
-       <el-table-column label="企业" align="center" prop="companyName" />
-       <el-table-column label="在岗状态" align="center" prop="workStatus" />
-       <el-table-column label="上岗日期" align="center" prop="workTime" width="180">
-         <template slot-scope="scope">
-           {{ scope.row.workTime | formatDate }}
-         </template>
-       </el-table-column>
-       <el-table-column label="离岗日期" align="center" prop="leaveTime" width="180">
-          <template slot-scope="scope">
-           {{ scope.row.leaveTime | formatDate }}
-         </template>
-       </el-table-column>
-       <el-table-column label="工作时长（天）" align="center" prop="workDays" />
-       <el-table-column label="薪资类型" align="center" prop="salaryType" />
-       <el-table-column label="薪资（元）" align="center" prop="salary" />
-       <el-table-column label="薪资总额（元）" align="center" prop="totalSalary" />
+      <el-table-column type="selection" width="55" align="center" />
+       <el-table-column label="岗位发布企业" align="center" prop="companyName" />
+       <el-table-column label="发布HR" align="center" prop="hrName" />
+       <el-table-column label="岗位发布总数" align="center" prop="cnt" />
+       <el-table-column label="佣金总额（元）" align="center" prop="totalCommission" />
     </el-table>
     <div style="padding: 14px;">
       <el-pagination
@@ -47,7 +33,7 @@
 </template>
 
 <script>
-import { listSalaries } from '@/api/salaries';
+import { listCommission } from '@/api/recruit/salaries';
 
 export default {
   name: "Guest",
@@ -71,7 +57,7 @@ export default {
   },
   methods: {
     getListData() {
-      listSalaries()
+      listCommission()
         .then(res => {
           console.log(res.data);
           this.list = res.data;
@@ -88,30 +74,6 @@ export default {
     },
     navigateTo(val) {
       this.$router.push("/" + val);
-    },
-    handleDel(row) {
-      this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        delSalaries(row.id)
-          .then(res => {
-            this.getListData();
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
     },
     handleEdit(index, row) {
       localStorage.setItem("goodsInfo", JSON.stringify(row));

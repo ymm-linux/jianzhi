@@ -4,7 +4,7 @@ module.exports = {
     port: 8082,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8090/', //后台接口的服务地址
+        target: 'http://127.0.0.1:8084/', //后台接口的服务地址
         changeOrigin: true, //changes the origin of the host header to the target URL 设置是否将host更换为代理url
         ws: true, //websocket是否代理
         secure: false, //true/false, if you want to verify the SSL Certs，https协议的情况下为true

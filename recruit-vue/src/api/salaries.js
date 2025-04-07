@@ -1,5 +1,32 @@
-import request  from '../request'
-import { defineComponent } from 'vue'
+import request from './request'
+
+// 查询工时薪资列表-根据登录用户
+export function listSalariesByUser() {
+  return request({
+    url: '/recruit/salaries/listSalariesByUser',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询工时薪资列表-根据HR
+export function listSalariesByHr() {
+  return request({
+    url: '/recruit/salaries/listSalariesByHr',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询佣金
+export function listCommissionByHr(query) {
+  return request({
+    url: '/recruit/salaries/listCommissionByHr',
+    method: 'get',
+    params: query
+  })
+}
+
 
 // 查询工时薪资列表
 export function listSalaries(query) {

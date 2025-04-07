@@ -46,11 +46,14 @@
           <el-menu-item index="9"  >
             <span slot="title" @click="pushRoute(8)">公告管理</span>
           </el-menu-item>
-          <el-menu-item index="9"  >
+          <el-menu-item index="10"  >
             <span slot="title" @click="pushRoute(9)">工时薪资</span>
           </el-menu-item>
-          <el-menu-item index="9"  >
+          <el-menu-item index="11"  >
             <span slot="title" @click="pushRoute(10)">在岗人员</span>
+          </el-menu-item>
+          <el-menu-item index="12"  >
+            <span slot="title" @click="pushRoute(11)">佣金统计</span>
           </el-menu-item>
 
         </el-menu>
@@ -132,6 +135,9 @@ export default {
         case 10:
           this.$router.push({path:'/recruit/workers'});
           break;
+         case 11:
+           this.$router.push({path:'/recruit/commission'});
+           break;
       }
     },
     collapse() {

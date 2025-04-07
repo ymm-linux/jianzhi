@@ -56,6 +56,10 @@
           {{scope.row.statePub?'已发布':'未发布'}}
         </template>
       </el-table-column>
+       <el-table-column
+            prop="commission"
+            label="佣金">
+        </el-table-column>
       <el-table-column
           fixed="right"
           label="操作"
