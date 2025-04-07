@@ -1,4 +1,5 @@
 <template>
+ <div>
   <el-card class="box-card" shadow="always">
     <div slot="header">
       <span>工时薪资</span>
@@ -45,9 +46,16 @@
       </el-pagination>
     </div>
   </el-card>
-</template>
 
-<script>
+   <el-card class="box-card" shadow="always">
+      <div style="display: flex; justify-content: space-between;">
+        <div id="barChart" style="width: 50%; height: 400px;"></div>
+        <div id="pieChart" style="width: 50%; height: 400px;"></div>
+      </div>
+    </el-card>
+   </div>
+</template>
+<script>import * as echarts from 'echarts';
 import { listSalaries, delSalaries } from '@/api/recruit/salaries';
 
 export default {
@@ -64,9 +72,9 @@ export default {
       userinfo: {},
       categorys: [],
       educations: []
-    }
+    };
   },
-  created: function () {
+  created() {
     this.userinfo = JSON.parse(sessionStorage.getItem("user"));
     this.getListData();
   },
@@ -76,6 +84,7 @@ export default {
         .then(res => {
           console.log(res.data);
           this.list = res.data;
+          this.renderCharts(); // 调用渲染图表的方法
         })
         .catch(error => {
           console.log(error);
@@ -139,10 +148,81 @@ export default {
       const education = this.educations.find(item => item.id === id);
       return education ? education.name : '不限';
     },
-  }
-}
+    renderCharts() {
+      // 柱状图数据：每个员工的薪资总额
+      const barData = this.list.map(item => ({
+        name: item.nickname,
+        value: item.totalSalary,
+      }));
+
+      // 饼图数据：薪资类型的分布
+      const pieData = this.list.reduce((acc, item) => {
+        const type = item.salaryType;
+        if (!acc[type]) acc[type] = 0;
+        acc[type] += 1;
+        return acc;
+      }, {});
+      const pieDataFormatted = Object.keys(pieData).map(key => ({
+        name: key,
+        value: pieData[key],
+      }));
+
+      // 渲染柱状图
+      const barChart = echarts.init(document.getElementById('barChart'));
+      barChart.setOption({
+        title: {
+          text: '员工薪资总额',
+          left: 'center',
+        },
+        xAxis: {
+          type: 'category',
+          data: barData.map(item => item.name),
+        },
+        yAxis: {
+          type: 'value',
+        },
+        series: [
+          {
+            name: '薪资总额',
+            type: 'bar',
+            data: barData.map(item => item.value),
+          },
+        ],
+      });
+
+      // 渲染饼图
+      const pieChart = echarts.init(document.getElementById('pieChart'));
+      pieChart.setOption({
+        title: {
+          text: '薪资类型分布',
+          left: 'center',
+        },
+        tooltip: {
+          trigger: 'item',
+        },
+        color: ['#5470C6', '#91CC75', '#EE6666', '#FAC858', '#73C0DE', '#3BA272', '#FC8452', '#9A60B4'], // 自定义颜色
+        series: [
+          {
+            name: '薪资类型',
+            type: 'pie',
+            radius: '50%',
+            data: pieDataFormatted,
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+          },
+        ],
+      });
+    },
+  },
+};
 </script>
 
-<style scoped>
-
+<style scoped>.box-card {
+  margin-bottom: 20px;
+}
 </style>

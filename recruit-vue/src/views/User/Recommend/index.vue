@@ -6,18 +6,15 @@
         <div id="search">
           <input @keyup.enter="userSearch" @input="showSearch=true" @blur="closeShow" v-model="keyWords" placeholder="搜索职位、企业" type="text">
           <el-button type="danger" icon="el-icon-search" @click="workSearch"></el-button>
-          <!-- <div v-show="showSearch" class="re-search-tip">
-            <div @click="workSearch" class="keywords-list">
-              搜索职位:{{keyWords}}
-            </div>
-            <div @click="userSearch" class="keywords-list">
-              搜索企业:{{keyWords}}
-            </div>
-          </div> -->
         </div>
         <div id="hot-job">
           <h4>热门职位:</h4>
           <span style="cursor: pointer" @click="$router.push({name:'recruitment',params:{categoryId:item.id}})" class="hot-jobs" v-for="item in hotJobs" :key="item.id">{{item.name}}</span>
+        </div>
+        <!-- 公告部分 -->
+        <div v-if="notice.noticeTitle" class="notice" style="text-align: center;" >
+          <h4>{{ notice.noticeTitle }}</h4>
+          <p>{{ notice.noticeContent }}</p>
         </div>
         <div class="recommend-cards">
           <div class="left">
@@ -32,7 +29,6 @@
           </div>
           <div class="right">
             <div @click="$router.push({name:'recruitment',params:{categoryId: 3}})" class="recommend-cards-2">
-<!--              <img src="https://source.unsplash.com/250x250/?advertisement" alt="">-->
               <img src="../../../assets/img/card2.png" alt="">
               <div class="mask"></div>
             </div>
@@ -48,7 +44,6 @@
     <div id="recommend-2">
       <h4>热招岗位</h4>
       <div id="work-list">
-        <!-- <rec-box1 :jobs="item" v-for="item in jobList"></rec-box1> -->
         <img @click="$router.push('recruitment')" width="auto" height="140" style="cursor: pointer" src="../../../assets/img/morejobs.png" alt="">
       </div>
     </div>
@@ -57,90 +52,72 @@
 
 <script>
 import HomeAside from "@/components/content/Aside";
+import { getLastNotice } from '@/api/notice.js';
 export default {
   name: "index",
-  components:{
+  components: {
     HomeAside
   },
+  data() {
+    return {
+      keyWords: '',
+      hotJobs: [
+        { name: "服务员", id: 3 },
+        { name: "营业员", id: 79 },
+        { name: "导购", id: 90 },
+        { name: "收银", id: 7 },
+        { name: "快递员", id: 161 },
+        { name: "移动App开发助理", id: 108 },
+        { name: "Java开发助理", id: 99 },
+        { name: "运维助理", id: 101 }
+      ],
+      notice: {
+        title: '', // 公告标题
+        content: '' // 公告内容
+      }
+    };
+  },
   created() {
-    this.init()
+    this.init();
+    this.lastNotice(); // 获取最新公告
   },
-  data(){
-    return{
-      keyWords:'',
-      // showSearch:false,
-      jobList:[],
-      hotJobs:[
-        {
-          name: "服务员",
-          id: 3,
-        },
-        {
-          name: "营业员",
-          id: 79,
-        },
-        {
-          name: "导购",
-          id: 90,
-        },
-        {
-          name: "收银",
-          id: 7,
-        },
-        {
-          name: "快递员",
-          id: 161,
-        },
-        {
-          name: "移动App开发",
-          id: 108,
-        },
-        {
-          name: "Java开发",
-          id: 99,
-        },
-        {
-          name: "运维",
-          id: 101,
-        }
-      ]
-    }
-  },
-  methods:{
-    init(){
-      // searchRec().then(res=>{
-      //   console.log(res)
-      //   let arr=res.data.extend.recruitmentList
-      //   for (let i in arr){
-      //     if(i<=14){
-      //       this.jobList.push(arr[i])
-      //     }
-      //   }
-      // })
+  methods: {
+    init() {
+      // 初始化逻辑
     },
-    closeShow(){
-      setTimeout(()=>{
-        this.showSearch=false
-      },200)
+    closeShow() {
+      setTimeout(() => {
+        this.showSearch = false;
+      }, 200);
     },
-    workSearch(){
+    workSearch() {
       this.$router.push({
-        name:'recruitment',
-        params:{
-          keyWords:this.keyWords
+        name: 'recruitment',
+        params: {
+          keyWords: this.keyWords
         }
-      })
+      });
     },
-    // userSearch(){
-    //   this.$router.push({
-    //     path:'userList',
-    //     query:{
-    //       searchName:this.keyWords
-    //     }
-    //   })
-    // }
+    // 获取最新公告
+    lastNotice() {
+        getLastNotice()
+            .then(res => {
+              console.log(res.data);
+              this.notice = res.data;
+            })
+            .catch(error => {
+              console.log(error);
+            });
+
+      // 模拟从接口获取公告数据
+      const mockNotice = {
+        title: "系统维护公告",
+        content: "系统将于2023年10月10日进行维护，预计维护时间为2小时。"
+      };
+     // this.notice = mockNotice;
+    }
   }
-}
+};
 </script>
 
 <style lang="stylus" scoped>
@@ -183,7 +160,6 @@ export default {
 .right
   width 29%
 .recommend-cards-1,.recommend-cards-2
-
   height 49.5%
   position relative
   &:hover .mask
@@ -273,4 +249,16 @@ export default {
     transition all .2s
     &:hover
       background #d5dfe2
+.notice
+  background-color #f0f0f0
+  padding 10px
+  margin 10px 0px 0px 0px
+  border-radius 5px
+  margin-bottom 20px
+  h4
+    margin 0 0 10px 0
+    color #333
+  p
+    margin 0
+    color #666
 </style>

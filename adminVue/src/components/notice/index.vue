@@ -14,6 +14,7 @@
      <el-table-column type="selection" width="55" align="center" />
      <el-table-column label="公告ID" align="center" prop="noticeId" />
      <el-table-column label="公告标题" align="center" prop="noticeTitle" />
+     <el-table-column label="公告内容" align="center" prop="noticeContent" />
      <el-table-column label="公告类型" align="center" prop="noticeType" />
      <el-table-column label="发布状态" align="center" prop="status" />
      <el-table-column label="备注" align="center" prop="remark" />

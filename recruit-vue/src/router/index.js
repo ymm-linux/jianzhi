@@ -74,6 +74,10 @@ const routes = [
           {
             path:'commission',
             component:()=>import("../views/Company/Recruitment/commission")
+          },
+          {
+            path:'messages',
+            component:()=>import("../views/Company/Recruitment/messages")
           }
         ]
       }

@@ -116,7 +116,7 @@
     </div>
     <div class="side">
       <div class="comment-area">
-        <h2 style="text-align: center">评论区：</h2>
+        <h2 style="text-align: center">在线交流：</h2>
         <el-row v-for="item in comments" :key="item.comment.commentId">
           <el-col class="user">
             <el-popover placement="top-left" width="200" trigger="click">

@@ -1,5 +1,8 @@
 <template>
-  <el-card class="box-card" shadow="always">
+ <div>
+    <div slot="header">
+      <span>工时薪资</span>
+    </div>
     <el-table
       ref="multipleTable"
       :loading="listLoading"
@@ -8,24 +11,26 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-     <el-table-column type="selection" width="55" align="center" />
-       <el-table-column label="岗位" align="center" prop="title" />
-       <el-table-column label="HR" align="center" prop="hrName" />
-       <el-table-column label="企业" align="center" prop="companyName" />
-       <el-table-column label="上岗日期" align="center" prop="workTime" width="180">
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="员工" align="center" prop="nickname" />
+      <el-table-column label="岗位" align="center" prop="title" />
+      <el-table-column label="HR" align="center" prop="hrName" />
+      <el-table-column label="企业" align="center" prop="companyName" />
+      <el-table-column label="在岗状态" align="center" prop="workStatus" />
+      <el-table-column label="上岗日期" align="center" prop="workTime" width="180">
+        <template slot-scope="scope">
+          {{ scope.row.workTime | formatDate }}
+        </template>
+      </el-table-column>
+      <el-table-column label="离岗日期" align="center" prop="leaveTime" width="180">
          <template slot-scope="scope">
-           {{ scope.row.workTime | formatDate }}
-         </template>
-       </el-table-column>
-       <el-table-column label="离岗日期" align="center" prop="leaveTime" width="180">
-          <template slot-scope="scope">
-           {{ scope.row.leaveTime | formatDate }}
-         </template>
-       </el-table-column>
-       <el-table-column label="工作时长（天）" align="center" prop="workDays" />
-       <el-table-column label="薪资类型" align="center" prop="salaryType" />
-       <el-table-column label="薪资（元）" align="center" prop="salary" />
-       <el-table-column label="薪资总额（元）" align="center" prop="totalSalary" />
+          {{ scope.row.leaveTime | formatDate }}
+        </template>
+      </el-table-column>
+      <el-table-column label="工作时长（天）" align="center" prop="workDays" />
+      <el-table-column label="薪资类型" align="center" prop="salaryType" />
+      <el-table-column label="薪资（元）" align="center" prop="salary" />
+      <el-table-column label="薪资总额（元）" align="center" prop="totalSalary" />
     </el-table>
     <div style="padding: 14px;">
       <el-pagination
@@ -39,11 +44,15 @@
         :total="list.length">
       </el-pagination>
     </div>
-  </el-card>
-</template>
 
-<script>
-import { listSalariesByHr } from '@/api/salaries';
+      <div style="display: flex; justify-content: space-between;">
+        <div id="barChart" style="width: 50%; height: 400px;"></div>
+        <div id="pieChart" style="width: 50%; height: 400px;"></div>
+      </div>
+   </div>
+</template>
+<script>import * as echarts from 'echarts';
+import { listSalariesByHr, delSalaries } from '@/api/salaries';
 
 export default {
   name: "Guest",
@@ -59,9 +68,9 @@ export default {
       userinfo: {},
       categorys: [],
       educations: []
-    }
+    };
   },
-  created: function () {
+  created() {
     this.userinfo = JSON.parse(sessionStorage.getItem("user"));
     this.getListData();
   },
@@ -71,6 +80,7 @@ export default {
         .then(res => {
           console.log(res.data);
           this.list = res.data;
+          this.renderCharts(); // 调用渲染图表的方法
         })
         .catch(error => {
           console.log(error);
@@ -134,10 +144,108 @@ export default {
       const education = this.educations.find(item => item.id === id);
       return education ? education.name : '不限';
     },
-  }
-}
+    renderCharts() {
+      // 柱状图数据：每个员工的薪资总额
+      const barData = this.list.map(item => ({
+        name: item.nickname,
+        value: item.totalSalary,
+      }));
+
+      // 按岗位分类统计工作时长
+      const jobData = this.list.reduce((acc, item) => {
+        const job = item.title; // 岗位名称
+        if (!acc[job]) {
+          acc[job] = 0;
+        }
+        acc[job] += item.workDays * 1; // 累加工作时长
+        return acc;
+      }, {});
+
+      // 饼图数据：每个岗位的工作时长分布
+      const pieData = Object.keys(jobData).map(job => ({
+        name: job,
+        value: jobData[job], // 工作时长
+      })).sort((a, b) => b.value - a.value); // 按工作时长从高到低排序
+
+      // 渲染柱状图
+      const barChart = echarts.init(document.getElementById('barChart'));
+      barChart.setOption({
+        title: {
+          text: '员工薪资总额',
+          left: 'center',
+        },
+        tooltip: {
+          trigger: 'axis',
+          formatter: function (params) {
+            const data = params[0].data;
+            return `员工: ${data.name}<br>薪资总额: ${data.value} 元`;
+          },
+        },
+        xAxis: {
+          type: 'category',
+          data: barData.map(item => item.name),
+        },
+        yAxis: {
+          type: 'value',
+        },
+        series: [
+          {
+            name: '薪资总额',
+            type: 'bar',
+            data: barData,
+            label: {
+              show: true,
+              position: 'top',
+              formatter: function (params) {
+                return `${params.data.value} 元`;
+              },
+            },
+          },
+        ],
+      });
+
+      // 渲染饼图
+      const pieChart = echarts.init(document.getElementById('pieChart'));
+      pieChart.setOption({
+        title: {
+          text: '岗位工作时长分布（按岗位分类）',
+          left: 'center',
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params) {
+            return `岗位: ${params.name}<br>工作时长: ${params.value} 天`;
+          },
+        },
+        color: ['#5470C6', '#91CC75', '#EE6666', '#FAC858', '#73C0DE', '#3BA272', '#FC8452', '#9A60B4'], // 自定义颜色
+        series: [
+          {
+            name: '工作时长',
+            type: 'pie',
+            radius: '50%',
+            data: pieData,
+            label: {
+              show: true,
+              formatter: function (params) {
+                return `${params.name}: ${params.value} 天`;
+              },
+            },
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+          },
+        ],
+      });
+    },
+  },
+};
 </script>
 
-<style scoped>
-
+<style scoped>.box-card {
+  margin-bottom: 20px;
+}
 </style>
