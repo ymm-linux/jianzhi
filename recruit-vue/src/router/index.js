@@ -103,6 +103,12 @@ const routes = [
         name: 'recruitment',
         component:()=>import("../views/User/Recruitment/index")
       },
+      // 薪资查看
+    {
+      path:'salaries',
+      name: 'salaries',
+      component:()=>import("../views/User/Recruitment/salaries")
+    },
       {
         path:'position',
         component:()=>import("../views/User/Recruitment/Detail")

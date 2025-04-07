@@ -1,5 +1,7 @@
 <template>
   <el-card class="box-card" shadow="always">
+    <div slot="header">
+    </div>
     <el-table
       ref="multipleTable"
       :loading="listLoading"
@@ -8,10 +10,10 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-     <el-table-column type="selection" width="55" align="center" />
        <el-table-column label="岗位" align="center" prop="title" />
        <el-table-column label="HR" align="center" prop="hrName" />
        <el-table-column label="企业" align="center" prop="companyName" />
+       <el-table-column label="在岗状态" align="center" prop="workStatus" />
        <el-table-column label="上岗日期" align="center" prop="workTime" width="180">
          <template slot-scope="scope">
            {{ scope.row.workTime | formatDate }}
@@ -43,7 +45,7 @@
 </template>
 
 <script>
-import { listSalariesByHr } from '@/api/salaries';
+import { listSalariesByUser } from '@/api/salaries';
 
 export default {
   name: "Guest",
@@ -67,7 +69,7 @@ export default {
   },
   methods: {
     getListData() {
-      listSalariesByHr()
+      listSalariesByUser()
         .then(res => {
           console.log(res.data);
           this.list = res.data;

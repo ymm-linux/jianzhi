@@ -1,7 +1,7 @@
 import request from './request'
 
 // 查询工时薪资列表-根据登录用户
-export function listSalariesByUser() {
+export function listSalariesByUser(query) {
   return request({
     url: '/recruit/salaries/listSalariesByUser',
     method: 'get',
@@ -10,7 +10,7 @@ export function listSalariesByUser() {
 }
 
 // 查询工时薪资列表-根据HR
-export function listSalariesByHr() {
+export function listSalariesByHr(query) {
   return request({
     url: '/recruit/salaries/listSalariesByHr',
     method: 'get',
@@ -26,7 +26,6 @@ export function listCommissionByHr(query) {
     params: query
   })
 }
-
 
 // 查询工时薪资列表
 export function listSalaries(query) {
