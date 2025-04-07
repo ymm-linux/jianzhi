@@ -39,6 +39,22 @@
           label="企业编号">
       </el-table-column>
       <el-table-column
+          prop="interviewTime"
+          label="面试时间">
+          <template slot-scope="scope">
+              {{ scope.row.interviewTime | formatDate }}
+            </template>
+      </el-table-column>
+      <el-table-column  prop="interviewResult" label="面试结果">
+      </el-table-column>
+      <el-table-column  prop="interview" label="面试评价">
+      </el-table-column>
+      <el-table-column  prop="interviewResult" label="入职时间">
+          <template slot-scope="scope">
+              {{ scope.row.workTime | formatDay }}
+            </template>
+      </el-table-column>
+      <el-table-column
           fixed="right"
           label="操作"
           width="210">

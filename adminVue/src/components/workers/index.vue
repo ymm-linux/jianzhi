@@ -12,24 +12,24 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="关联学生" align="center" prop="studentId" />
-      <el-table-column label="关联岗位" align="center" prop="positionId" />
-      <el-table-column label="关联企业" align="center" prop="enterId" />
-      <el-table-column label="上岗日期" align="center" prop="startDate" width="180">
-        <template slot-scope="scope">
-          {{ scope.row.startDate | formatDate }}
-        </template>
-      </el-table-column>
-      <el-table-column label="离岗日期" align="center" prop="endDate" width="180">
-        <template slot-scope="scope">
-          {{ scope.row.endDate | formatDate }}
-        </template>
-      </el-table-column>
-      <el-table-column label="工作时长" align="center" prop="workHours" />
-      <el-table-column label="薪资类型" align="center" prop="salaryType" />
-      <el-table-column label="薪资" align="center" prop="salary" />
-      <el-table-column label="薪资总额" align="center" prop="salarySum" />
+       <el-table-column label="员工" align="center" prop="nickname" />
+       <el-table-column label="岗位" align="center" prop="title" />
+       <el-table-column label="HR" align="center" prop="hrName" />
+       <el-table-column label="企业" align="center" prop="companyName" />
+       <el-table-column label="上岗日期" align="center" prop="workTime" width="180">
+         <template slot-scope="scope">
+           {{ scope.row.workTime | formatDate }}
+         </template>
+       </el-table-column>
+       <el-table-column label="离岗日期" align="center" prop="leaveTime" width="180">
+          <template slot-scope="scope">
+           {{ scope.row.leaveTime | formatDate }}
+         </template>
+       </el-table-column>
+       <el-table-column label="工作时长（天）" align="center" prop="workDays" />
+       <el-table-column label="薪资类型" align="center" prop="salaryType" />
+       <el-table-column label="薪资（元）" align="center" prop="salary" />
+       <el-table-column label="薪资总额（元）" align="center" prop="totalSalary" />
     </el-table>
     <div style="padding: 14px;">
       <el-pagination

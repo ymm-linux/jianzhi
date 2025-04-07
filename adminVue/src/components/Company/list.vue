@@ -65,7 +65,7 @@
           {{ scope.row.createTime | formatDay }}
         </template>
       </el-table-column>
-      <el-table-column width="155" label="操作" align="center">
+      <el-table-column width="155"  label="操作" align="center">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
             >编辑</el-button
