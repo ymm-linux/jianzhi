@@ -104,6 +104,15 @@ export default {
   },
   methods: {
     pushRoute(index) {
+     if (this.$route.path !== index) {
+        this.$router.push(index).catch(err => {
+          // 捕获 NavigationDuplicated 错误
+          if (err.name !== 'NavigationDuplicated') {
+            throw err; // 如果不是重复导航错误，则抛出
+          }
+        });
+      }
+
       switch(index) {
         case 1:
           this.$router.push({path:'/position/list'});

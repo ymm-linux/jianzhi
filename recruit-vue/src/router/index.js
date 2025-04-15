@@ -74,6 +74,10 @@ const routes = [
             component:()=>import("../views/Company/Recruitment/postResume")
           },
           {
+            path:'feedbacks',
+            component:()=>import("../views/Company/Recruitment/feedbacks")
+          },
+          {
             path:'salaries',
             component:()=>import("../views/Company/Recruitment/salaries")
           },
@@ -112,6 +116,12 @@ const routes = [
         path:'recruitment',
         name: 'recruitment',
         component:()=>import("../views/User/Recruitment/index")
+      },
+      // 投诉反馈
+      {
+        path:'feedbacks',
+        name: 'feedbacks',
+        component:()=>import("../views/User/Recruitment/feedbacks")
       },
       // 薪资查看
     {

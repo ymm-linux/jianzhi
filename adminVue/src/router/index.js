@@ -145,59 +145,36 @@ export default new Router({
     },
     {
       path: '/',
-      component:()=>import("@/components/Home"),
+      component: () => import("@/components/Home"),
       children: [
         {
           path: 'recruit/feedbacks',
-          component:()=>import("@/components/feedbacks/index"),
+          component: () => import("@/components/feedbacks"),
           name: '投诉反馈'
-        }
-      ]
-    },
-    {
-      path: '/',
-      component:()=>import("@/components/Home"),
-      children: [
+        },
         {
           path: 'recruit/notice',
-          component:()=>import("@/components/notice"),
+          component: () => import("@/components/notice"),
           name: '公告管理'
-        }
-      ]
-    },
-   {
-        path: '/',
-        component:()=>import("@/components/Home"),
-        children: [
-          {
-            path: 'recruit/salaries',
-            component:()=>import("@/components/salaries"),
-            name: '工时薪资'
-          }
-        ]
-      },
-    {
-      path: '/',
-      component:()=>import("@/components/Home"),
-      children: [
-       {
-         path: 'recruit/workers',
-         component:()=>import("@/components/workers"),
-         name: '在岗员工'
-       }
-      ]
-    },
-   {
-      path: '/',
-      component:()=>import("@/components/Home"),
-      children: [
+        },
+        {
+          path: 'recruit/salaries',
+          component: () => import("@/components/salaries"),
+          name: '工时薪资'
+        },
+        {
+          path: 'recruit/workers',
+          component: () => import("@/components/workers"),
+          name: '在岗员工'
+        },
         {
           path: 'recruit/commission',
-          component:()=>import("@/components/commission/index"),
+          component: () => import("@/components/commission/index"),
           name: '佣金统计'
         }
       ]
     },
+
     {
       path: '/',
       component:()=>import("@/components/Home"),

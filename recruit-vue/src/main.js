@@ -63,6 +63,27 @@ Vue.filter('formatDate',function (str){
     return y + '-' + m + '-' + d;
 })
 
+Vue.filter('formatTime', function (str) {
+    if (!str) {
+        return '';
+    }
+    let date = new Date(str);
+    let y = date.getFullYear();
+    let m = date.getMonth() + 1;
+    m = m < 10 ? '0' + m : m;
+    let d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+
+    let h = date.getHours();
+    h = h < 10 ? '0' + h : h;
+    let min = date.getMinutes();
+    min = min < 10 ? '0' + min : min;
+    let s = date.getSeconds();
+    s = s < 10 ? '0' + s : s;
+
+    return `${y}-${m}-${d} ${h}:${min}:${s}`;
+});
+
 Vue.filter('setAvatar',function (url){
     if(url){
         return 'data:image/png;base64,'+url

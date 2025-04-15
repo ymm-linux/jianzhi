@@ -15,11 +15,13 @@
 import { hrInfoShow } from '@/api/hr'
 export default {
   name: "AdminAside",
+  // 企业菜单
   data(){
     return{
       aside:[
         {name:'岗位管理',icon:'el-icon-notebook-1',path:'/company/jobManage'},
         {name:'投递管理',icon:'el-icon-setting',path:'/company/postResume'},
+        {name:'投诉反馈',icon:'el-icon-setting',path:'/company/feedbacks'},
         {name:'薪资管理',icon:'el-icon-setting',path:'/company/salaries'},
         {name:'佣金统计',icon:'el-icon-setting',path:'/company/commission'}
       ],
