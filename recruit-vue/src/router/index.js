@@ -30,6 +30,12 @@ const routes = [
       }
     ]
   },
+  {
+    path: '/onboarding-arrangement',
+    name: 'OnboardingArrangement',
+    component: () => import('@/views/Company/Recruitment/OnboardingArrangement.vue'),
+    meta: { title: '入职安排' }
+  },
   // 企业用户功能：
   // 1.	修改企业信息
   // 2.	发布职位信息

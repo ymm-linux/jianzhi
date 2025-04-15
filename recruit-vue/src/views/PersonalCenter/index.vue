@@ -5,7 +5,7 @@
       <div id="bg">
         <el-upload
           class="avatar-uploader"
-          action="http://localhost:8084/api/user/avatar/upload"
+          action="'http://localhost:8084/api/user/avatar/upload?userId=' + {{ userId}}"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"

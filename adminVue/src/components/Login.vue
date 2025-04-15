@@ -71,6 +71,7 @@ export default {
           managerLogin(loginParams.username, loginParams.password)
           .then(res => {
             if (res.data) {
+              sessionStorage.setItem("userName", this.ruleForm.account);
               sessionStorage.setItem("user", JSON.stringify(res.data));
               this.$router.push({ path: "/position/list" });
             } else {

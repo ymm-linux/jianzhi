@@ -13,7 +13,8 @@
     >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="投诉用户" align="center" prop="userId" />
+      <el-table-column label="用户ID" align="center" prop="userId" />
+      <el-table-column label="投诉用户" align="center" prop="userName" />
       <el-table-column label="用户类型" align="center" prop="userType" />
       <el-table-column label="投诉内容" align="center" prop="content" />
       <el-table-column label="处理状态" align="center" prop="status" />
@@ -23,7 +24,8 @@
         </template>
       </el-table-column>
       <el-table-column label="反馈内容" align="center" prop="reviewerContent" />
-      <el-table-column label="处理人" align="center" prop="reviewerId" />
+      <el-table-column label="处理人ID" align="center" prop="reviewerId" />
+      <el-table-column label="处理人" align="center" prop="reviewerName" />
       <el-table-column label="反馈时间" align="center" width="180">
         <template slot-scope="scope">
           {{ scope.row.reviewerTime | formatDate }}
@@ -34,6 +36,7 @@
         label="操作"
         width="210">
         <template slot-scope="scope">
+          <el-button @click="skipUpdate(scope.row)" type="warning" size="mini">反馈</el-button>
           <el-button @click="handleDel(scope.row)" type="danger" size="mini">删除</el-button>
         </template>
       </el-table-column>
@@ -50,16 +53,28 @@
         :total="list.length">
       </el-pagination>
     </div>
+
+    <el-dialog title="投诉反馈" :visible.sync="dialogVisible" width="30%" center>
+     <!-- 隐藏的 ID 字段 -->
+      <el-input type="hidden" v-model="id" />
+      <el-input type="textarea" :rows="2" v-model="reviewerContent" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleEdit()">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-card>
 </template>
 
 <script>
-import { listFeedbacks, delFeedbacks } from '@/api/recruit/feedbacks';
+import { listFeedbacks,getFeedBacks, delFeedbacks,updateFeedbacks } from '@/api/recruit/feedbacks';
 
 export default {
   name: "Guest",
   data() {
     return {
+      dialogVisible: false,
+      reviewerContent: '',
       currentPage: 1,
       pagesize: 5,
       list: [],
@@ -96,13 +111,21 @@ export default {
     navigateTo(val) {
       this.$router.push("/" + val);
     },
+    /** 修改按钮操作 */
+     skipUpdate(row) {
+      this.dialogVisible = true;
+      this.id = row.id;
+      this.reviewerContent = row.reviewerContent;
+      this.title = "投诉反馈";
+    },
     handleDel(row) {
+      const data = { id: row.id }; // 将 data 定义为对象
       this.$confirm('此操作将永久删除该信息, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delFeedbacks(row.id)
+        delFeedbacks(data)
           .then(res => {
             this.getListData();
             this.$message({
@@ -120,14 +143,24 @@ export default {
         });
       });
     },
-    handleEdit(index, row) {
-      localStorage.setItem("goodsInfo", JSON.stringify(row));
-      this.$router.push({
-        path: '/edit',
-        params: {
-          id: row.positionId
-        }
-      });
+    handleEdit() {
+      this.dialogVisible = false;
+      const data = {
+        id: this.id
+        ,reviewerContent: this.reviewerContent
+       }; // 将 data 定义为对象
+      console.log(data);
+      updateFeedbacks(data)
+        .then(res => {
+          this.getListData();
+          this.$message({
+            type: 'success',
+            message: '反馈成功!'
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     toggleSelection(rows) {
       if (rows) {

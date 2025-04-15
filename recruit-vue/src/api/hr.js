@@ -40,6 +40,10 @@ export function allowApplication(application){
     return request({url: '/hr/application/allow', method: 'post', data: application})
 }
 
+export function submitOnboarding(application){
+    return request({url: '/hr/application/onboarding', method: 'post', data: application})
+}
+
 //refuseApplication
 export function refuseApplication(application){
     return request({url: '/hr/application/refuse', method: 'post', data: application})

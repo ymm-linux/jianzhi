@@ -3,6 +3,16 @@
     <div slot="header">
       <span>通知公告</span>
     </div>
+    <!-- 新增按钮（表格左上角） -->
+    <div class="table-toolbar">  <!-- 新增容器 -->
+      <el-button
+        @click="handleAdd"
+        type="primary"
+        size="mini"
+        style="margin-bottom: 12px"
+      >新增
+      </el-button>
+    </div>
     <el-table
       ref="multipleTable"
       :loading="listLoading"
@@ -11,24 +21,20 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-     <el-table-column type="selection" width="55" align="center" />
-     <el-table-column label="公告ID" align="center" prop="noticeId" />
-     <el-table-column label="公告标题" align="center" prop="noticeTitle" />
-     <el-table-column label="公告内容" align="center" prop="noticeContent" />
-     <el-table-column label="公告类型" align="center" prop="noticeType" />
-     <el-table-column label="发布状态" align="center" prop="status" />
-     <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="公告ID" align="center" prop="noticeId"/>
+      <el-table-column label="公告标题" align="center" prop="noticeTitle"/>
+      <el-table-column label="公告内容" align="center" prop="noticeContent"/>
+      <el-table-column label="公告类型" align="center" prop="noticeType"/>
+      <el-table-column label="发布状态" align="center" prop="status"/>
+      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column
         fixed="right"
         label="操作"
-        width="210">
+        width="230">
         <template slot-scope="scope">
-          <el-button @click="handleAdd(scope.row)" type="danger" size="mini">新增</el-button>
-        </template>
-        <template slot-scope="scope">
-           <el-button @click="handleUpdate(scope.row)" type="danger" size="mini">修改</el-button>
-        </template>
-        <template slot-scope="scope">
+          <!-- <el-button @click="handleAdd(scope.row)" type="primary" size="mini">新增</el-button> -->
+          <el-button @click="handleUpdate(scope.row)" type="warning" size="mini">修改</el-button>
           <el-button @click="handleDel(scope.row)" type="danger" size="mini">删除</el-button>
         </template>
       </el-table-column>
@@ -45,12 +51,51 @@
         :total="list.length">
       </el-pagination>
     </div>
+    <el-dialog :title="title" :visible.sync="open" width="50%" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+<!--        <el-form-item label="公告id" prop="noticeId">-->
+<!--          <el-input v-model="form.noticeId" placeholder="请输入公告ID" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="公告标题" prop="noticeTitle">
+          <el-input v-model="form.noticeTitle" placeholder="请输入公告标题" />
+        </el-form-item>
+        <el-form-item label="公告类型" prop="noticeType">
+          <el-select v-model="form.noticeType" placeholder="请选择公告类型">
+            <el-option label="系统公告" value="1" />
+            <el-option label="活动公告" value="2" />
+            <el-option label="紧急通知" value="3" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="公告内容" prop="noticeContent">
+          <el-input
+            v-model="form.noticeContent"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入公告内容"
+          />
+        </el-form-item>
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio label="0">草稿</el-radio>
+            <el-radio label="1">发布</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </el-card>
 
 </template>
 
 <script>
-import { listNotice, getNotice, delNotice, addNotice, updateNotice } from "@/api/recruit/notice";
+import {listNotice, getNotice, delNotice, addNotice, updateNotice} from "@/api/recruit/notice";
 
 export default {
   name: "Guest",
@@ -65,30 +110,85 @@ export default {
       multipleSelection: null,
       userinfo: {},
       categorys: [],
-      educations: []
+      educations: [],
+      open: false, // 控制对话框显示
+      title: "",   // 对话框标题
+      form: {      // 表单数据
+        // noticeId: null,
+        noticeTitle: null,
+        noticeType: null,
+        noticeContent: null,
+        status: "0", // 默认草稿状态
+        createBy: null,
+        createTime: null,
+        updateBy: null,
+        updateTime: null
+      }, rules: {     // 表单验证规则
+        noticeTitle: [
+          {required: true, message: "公告标题不能为空", trigger: "blur"}
+        ],
+        noticeType: [
+          {required: true, message: "公告类型不能为空", trigger: "change"}
+        ],
+        noticeContent: [
+          {required: true, message: "公告内容不能为空", trigger: "blur"}
+        ]
+      }
     }
   },
-  // 表单重置
-  reset() {
-    this.form = {
-      noticeId: null,
-      noticeTitle: null,
-      noticeType: null,
-      noticeContent: null,
-      status: null,
-      createBy: null,
-      createTime: null,
-      updateBy: null,
-      updateTime: null,
-      remark: null
-    };
-    this.resetForm("form");
-  },
+
   created: function () {
     this.userinfo = JSON.parse(sessionStorage.getItem("user"));
     this.getListData();
   },
   methods: {
+    // 表单重置
+    reset() {
+      this.form = {
+        noticeId: null,
+        noticeTitle: null,
+        noticeType: null,
+        noticeContent: null,
+        status: null,
+        createBy: null,
+        // createTime: null,
+        // updateBy: null,
+        // updateTime: null,
+        remark: null
+      };
+      // this.resetForm("form");
+    },
+    // 新增以下方法
+    submitForm() {
+      console.log(sessionStorage.getItem("userName"),'sessionStorage.getItem("userName")')
+      this.form.createBy = sessionStorage.getItem("userName")
+      // this.form.createTime = new Date()
+      // this.form.updateBy = sessionStorage.getItem("userName")
+      // this.form.updateTime = new Date()
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.noticeId) {
+            // 修改公告
+            updateNotice(this.form).then(response => {
+              this.$message.success("修改成功");
+              this.open = false;
+              this.getListData();
+            });
+          } else {
+            // 新增公告
+            addNotice(this.form).then(response => {
+              this.$message.success("新增成功");
+              this.open = false;
+              this.getListData();
+            });
+          }
+        }
+      });
+    },
+    cancel() {
+      this.open = false;
+      this.reset();
+    },
     getListData() {
       listNotice()
         .then(res => {
@@ -132,7 +232,7 @@ export default {
         });
       });
     },
-     /** 新增按钮操作 */
+    /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
@@ -178,5 +278,14 @@ export default {
 </script>
 
 <style scoped>
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+.table-toolbar {
+  text-align: left;
+  padding: 10 20px; /* 与表格内容对齐 */
+}
 </style>

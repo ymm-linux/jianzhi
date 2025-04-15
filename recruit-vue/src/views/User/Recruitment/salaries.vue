@@ -1,7 +1,7 @@
 <template>
  <div>
     <div slot="header">
-      <span>工时薪资</span>
+      <span>&nbsp;</span>
     </div>
     <el-table
       ref="multipleTable"
@@ -11,7 +11,6 @@
       style="width: 100%"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="岗位" align="center" prop="title" />
       <el-table-column label="HR" align="center" prop="hrName" />
       <el-table-column label="企业" align="center" prop="companyName" />

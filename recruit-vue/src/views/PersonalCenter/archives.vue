@@ -15,6 +15,7 @@
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
+            :data="{ userId: user.userId }"
           >
             <el-avatar
               id="avatar"

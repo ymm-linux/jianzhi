@@ -1,209 +1,133 @@
 <template>
-  <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="发送者ID" prop="senderId">
-        <el-input
-          v-model="queryParams.senderId"
-          placeholder="请输入发送者ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="接收者ID" prop="receiverId">
-        <el-input
-          v-model="queryParams.receiverId"
-          placeholder="请输入接收者ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="是否已读" prop="readFlag">
-        <el-input
-          v-model="queryParams.readFlag"
-          placeholder="请输入是否已读"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="创建时间" prop="sendTime">
-        <el-date-picker clearable
-          v-model="queryParams.sendTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择创建时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="修改时间" prop="readTime">
-        <el-date-picker clearable
-          v-model="queryParams.readTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择修改时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+  <div class="app-container chat-app">
+    <!-- 顶部标题栏 -->
+    <div class="chat-header">
+    1111
+      <h2>{{ userType === 'company' ? '企业招聘咨询' : '求职咨询' }}</h2>
+    </div>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['recruit:messages:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['recruit:messages:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['recruit:messages:remove']"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['recruit:messages:export']"
-        >导出</el-button>
-      </el-col>
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
-    </el-row>
-
-    <el-table v-loading="loading" :data="messagesList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="发送者ID" align="center" prop="senderId" />
-      <el-table-column label="接收者ID" align="center" prop="receiverId" />
-      <el-table-column label="消息内容" align="center" prop="content" />
-      <el-table-column label="是否已读" align="center" prop="readFlag" />
-      <el-table-column label="创建时间" align="center" prop="sendTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.sendTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="修改时间" align="center" prop="readTime" width="180">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.readTime, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['recruit:messages:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['recruit:messages:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 添加或修改在线交流对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="发送者ID" prop="senderId">
-          <el-input v-model="form.senderId" placeholder="请输入发送者ID" />
-        </el-form-item>
-        <el-form-item label="接收者ID" prop="receiverId">
-          <el-input v-model="form.receiverId" placeholder="请输入接收者ID" />
-        </el-form-item>
-        <el-form-item label="消息内容">
-          <editor v-model="form.content" :min-height="192"/>
-        </el-form-item>
-        <el-form-item label="是否已读" prop="readFlag">
-          <el-input v-model="form.readFlag" placeholder="请输入是否已读" />
-        </el-form-item>
-        <el-form-item label="创建时间" prop="sendTime">
-          <el-date-picker clearable
-            v-model="form.sendTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择创建时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="修改时间" prop="readTime">
-          <el-date-picker clearable
-            v-model="form.readTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择修改时间">
-          </el-date-picker>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+    <div class="chat-layout">
+      <!-- 左侧联系人列表 -->
+      <div class="contact-panel">
+        <div class="contact-header">
+          <el-input
+            v-model="searchQuery"
+            placeholder="搜索联系人..."
+            prefix-icon="el-icon-search"
+            clearable>
+          </el-input>
+        </div>
+        
+        <!-- 联系人列表 -->
+        <div class="contact-list">
+          <div 
+            v-for="contact in filteredContacts"
+            :key="contact.id"
+            class="contact-item"
+            :class="{'active': activeContact === contact.id}"
+            @click="handleContactSelect(contact)">
+            <el-avatar :src="contact.avatar || defaultAvatar" size="medium"></el-avatar>
+            <div class="contact-info">
+              <div class="contact-name-row">
+                <span class="contact-name">{{ contact.name }}</span>
+                <span class="resume-status" :class="contact.resumeStatus">
+                  {{ getResumeStatusText(contact.resumeStatus) }}
+                </span>
+              </div>
+              <span class="contact-lastmsg">{{ contact.lastMessage || '暂无消息' }}</span>
+            </div>
+            <div class="contact-meta">
+              <span class="contact-time">{{ contact.lastTime }}</span>
+              <el-badge v-if="contact.unreadCount" :value="contact.unreadCount" class="unread-badge"/>
+            </div>
+          </div>
+        </div>
       </div>
-    </el-dialog>
+
+      <!-- 右侧聊天区域 -->
+      <div class="chat-panel" v-if="activeContact">
+        <div class="chat-header">
+          <div class="chat-title">
+            <el-avatar :src="currentContact.avatar || defaultAvatar" size="medium"></el-avatar>
+            <div class="chat-user-info">
+              <h3>{{ currentContact.name }}</h3>
+              <div class="resume-info" v-if="currentContact.resumeTitle">
+                <span>应聘职位: {{ currentContact.resumeTitle }}</span>
+                <el-tag size="small" :type="getResumeStatusType(currentContact.resumeStatus)">
+                  {{ getResumeStatusText(currentContact.resumeStatus) }}
+                </el-tag>
+              </div>
+            </div>
+          </div>
+          <div class="chat-actions">
+            <el-button 
+              v-if="userType === 'company'"
+              size="small" 
+              type="primary"
+              @click="handleResumeAction">
+              {{ getActionButtonText() }}
+            </el-button>
+          </div>
+        </div>
+        
+        <!-- 消息列表 -->
+        <div class="message-panel" ref="messagePanel">
+          <div class="message-date-divider" v-if="messagesList.length">
+            {{ formatDate(messagesList[0].sendTime) }}
+          </div>
+          <div 
+            v-for="(msg, index) in messagesList" 
+            :key="msg.id"
+            class="message-bubble"
+            :class="{'is-me': msg.senderId === currentUserId}">
+            <div class="message-content">
+              <div class="message-text">{{ msg.content }}</div>
+              <div class="message-time">{{ formatTime(msg.sendTime) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 输入框区域 -->
+        <div class="input-panel">
+          <el-input
+            v-model="newMessage"
+            type="textarea"
+            :rows="3"
+            resize="none"
+            placeholder="输入消息..."
+            @keyup.enter.native.ctrl="sendMessage">
+          </el-input>
+          <div class="input-actions">
+            <span class="input-tip">Ctrl + Enter 发送</span>
+            <el-button type="primary" @click="sendMessage">发送</el-button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 未选择联系人时的提示 -->
+      <div v-else class="no-contact">
+        <el-empty description="请选择联系人开始聊天"></el-empty>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { listMessages, getMessages, delMessages, addMessages, updateMessages } from "@/api/messages";
+import { getMessages, sendMessage,listContacts,markAsRead } from "@/api/messages";
 
 export default {
-  name: "Messages",
   data() {
     return {
-      // 遮罩层
+      // 原有数据
       loading: true,
-      // 选中数组
       ids: [],
-      // 非单个禁用
       single: true,
-      // 非多个禁用
       multiple: true,
-      // 显示搜索条件
       showSearch: true,
-      // 总条数
       total: 0,
-      // 在线交流表格数据
       messagesList: [],
-      // 弹出层标题
       title: "",
-      // 是否显示弹出层
       open: false,
-      // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -214,9 +138,7 @@ export default {
         sendTime: null,
         readTime: null
       },
-      // 表单参数
       form: {},
-      // 表单校验
       rules: {
         senderId: [
           { required: true, message: "发送者ID不能为空", trigger: "blur" }
@@ -230,28 +152,127 @@ export default {
         sendTime: [
           { required: true, message: "创建时间不能为空", trigger: "blur" }
         ],
-      }
+      },
+      newMessage: "", // 新消息内容
+      currentUserId: 1, // 当前用户ID（根据实际业务获取）
+      pollingInterval: null, // 轮询定时器
+      userList: [ // 模拟用户列表
+        { id: 1, name: "用户A" },
+        { id: 2, name: "用户B" },
+        { id: 3, name: "用户C" }
+      ],
+      activeContact: "1", // 当前选中的联系人ID
+      currentContactName: "用户A", // 当前联系人名称
+      defaultAvatar: require('@/assets/default-avatar.png'),
+      searchQuery: '',
+      currentContact: null,
     };
   },
   created() {
+    this.initUserData();
+    this.getContacts();
     this.getList();
+    this.startPolling();
+  },
+  computed: {
+    filteredContacts() {
+      if (!this.searchQuery) return this.userList;
+      const query = this.searchQuery.toLowerCase();
+      return this.userList.filter(contact => 
+        contact.name.toLowerCase().includes(query) ||
+        (contact.resumeTitle && contact.resumeTitle.toLowerCase().includes(query))
+      );
+    }
   },
   methods: {
-    /** 查询在线交流列表 */
+    // 初始化用户数据
+    initUserData() {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      const hr = JSON.parse(sessionStorage.getItem('hr'));
+      this.userType = hr ? 'company' : 'student';
+      this.currentUserId = hr ? hr.id : user.id;
+    },
+    
+    // 获取联系人列表
+    getContacts() {
+      listContacts(this.currentUserId, this.userType).then(res => {
+        this.userList = res.data;
+        if (this.userList.length > 0) {
+          this.activeContact = this.userList[0].id;
+          this.currentContactName = this.userList[0].name;
+        }
+      });
+    },
+
+    // 获取消息列表（修改为双向查询）
+    getList() {
+      getMessages({
+        senderId: this.currentUserId,
+        receiverId: this.activeContact
+      }).then(res => {
+        this.messagesList = res.rows;
+        this.scrollToBottom();
+      });
+    },
+
+    // 发送消息
+    sendMessage() {
+      if (!this.newMessage.trim()) return;
+      
+      const message = {
+        senderId: this.currentUserId,
+        receiverId: this.activeContact,
+        content: this.newMessage,
+        sendTime: new Date(),
+        readFlag: false,
+        senderType: this.userType,
+        receiverType: this.userType === 'student' ? 'company' : 'student'
+      };
+
+      sendMessage(message).then(() => {
+        this.messagesList.push(message);
+        this.newMessage = '';
+        this.scrollToBottom();
+      });
+    },
+
+    // 滚动到底部
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const container = this.$el.querySelector('.chat-messages');
+        container.scrollTop = container.scrollHeight;
+      });
+    },
+    /** 切换联系人 */
+    handleContactSelect(contact) {
+      this.currentContact = contact;
+      this.activeContact = contact.id;
+      this.getList();
+      // 标记消息为已读
+      if (contact.unreadCount > 0) {
+        markAsRead({
+          senderId: contact.id,
+          receiverId: this.currentUserId
+        });
+      }
+    },
+    // 原有方法保持不变
     getList() {
       this.loading = true;
-      listMessages(this.queryParams).then(response => {
+      listMessages({
+        ...this.queryParams,
+        senderId: this.currentUserId,
+        receiverId: this.activeContact
+      }).then(response => {
         this.messagesList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
     },
-    // 取消按钮
     cancel() {
       this.open = false;
       this.reset();
     },
-    // 表单重置
     reset() {
       this.form = {
         id: null,
@@ -264,29 +285,24 @@ export default {
       };
       this.resetForm("form");
     },
-    /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
     },
-    /** 重置按钮操作 */
     resetQuery() {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
-    /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
       this.title = "添加在线交流";
     },
-    /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
@@ -296,7 +312,6 @@ export default {
         this.title = "修改在线交流";
       });
     },
-    /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
@@ -316,7 +331,6 @@ export default {
         }
       });
     },
-    /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
       this.$modal.confirm('是否确认删除在线交流编号为"' + ids + '"的数据项？').then(function() {
@@ -326,12 +340,257 @@ export default {
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
     },
-    /** 导出按钮操作 */
     handleExport() {
       this.download('recruit/messages/export', {
         ...this.queryParams
       }, `messages_${new Date().getTime()}.xlsx`)
+    },
+    getResumeStatusText(status) {
+      const statusMap = {
+        'pending': '待处理',
+        'reviewing': '审核中',
+        'accepted': '已通过',
+        'rejected': '已拒绝'
+      };
+      return statusMap[status] || '未知状态';
+    },
+    getResumeStatusType(status) {
+      const typeMap = {
+        'pending': 'info',
+        'reviewing': 'warning',
+        'accepted': 'success',
+        'rejected': 'danger'
+      };
+      return typeMap[status] || 'info';
+    },
+    getActionButtonText() {
+      const status = this.currentContact.resumeStatus;
+      const actionMap = {
+        'pending': '开始处理',
+        'reviewing': '完成审核',
+        'accepted': '查看简历',
+        'rejected': '重新审核'
+      };
+      return actionMap[status] || '处理简历';
+    },
+    handleResumeAction() {
+      // 根据不同状态处理简历相关操作
+      const status = this.currentContact.resumeStatus;
+      // ... 实现具体的简历处理逻辑
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.chat-app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f7fa;
+}
+
+.chat-header {
+  padding: 15px 20px;
+  background: #409EFF;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  
+  h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+}
+
+.chat-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.contact-panel {
+  width: 280px;
+  border-right: 1px solid #e6e6e6;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-header {
+  padding: 15px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.contact-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.contact-item {
+  display: flex;
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: background 0.3s;
+  border-bottom: 1px solid #f0f0f0;
+  
+  &:hover {
+    background: #f5f7fa;
+  }
+  
+  &.active {
+    background: #e6f7ff;
+  }
+}
+
+.contact-info {
+  flex: 1;
+  margin-left: 12px;
+  overflow: hidden;
+  
+  .contact-name {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  
+  .contact-lastmsg {
+    font-size: 12px;
+    color: #999;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+.contact-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  
+  .contact-time {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 4px;
+  }
+}
+
+.chat-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f0f2f5;
+}
+
+.message-panel {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #f0f2f5;
+}
+
+.message-bubble {
+  max-width: 60%;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  
+  &.is-me {
+    margin-left: auto;
+    background: #409EFF;
+    color: white;
+    
+    .message-time {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
+
+.message-content {
+  margin-bottom: 5px;
+}
+
+.message-time {
+  font-size: 12px;
+  color: #999;
+  text-align: right;
+}
+
+.input-panel {
+  padding: 15px;
+  border-top: 1px solid #e6e6e6;
+  background: white;
+  
+  .input-actions {
+    margin-top: 10px;
+    text-align: right;
+  }
+}
+
+.online-status {
+  font-size: 12px;
+  color: #67C23A;
+  margin-left: 8px;
+}
+
+.unread-badge {
+  margin-top: 4px;
+}
+
+.resume-status {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  
+  &.pending { color: #909399; }
+  &.reviewing { color: #E6A23C; }
+  &.accepted { color: #67C23A; }
+  &.rejected { color: #F56C6C; }
+}
+
+.chat-user-info {
+  margin-left: 12px;
+  
+  .resume-info {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+    
+    .el-tag {
+      margin-left: 8px;
+    }
+  }
+}
+
+.message-date-divider {
+  text-align: center;
+  margin: 20px 0;
+  color: #909399;
+  font-size: 12px;
+  
+  &::before,
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: #DCDFE6;
+    margin: 0 8px;
+    vertical-align: middle;
+  }
+}
+
+.input-tip {
+  color: #909399;
+  font-size: 12px;
+}
+
+.no-contact {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f7fa;
+}
+</style>
