@@ -68,7 +68,7 @@
 
       <div class="message-panel" ref="messagePanel">
         <div v-for="msg in messagesList"
-             :key="msg.id"
+             :key="`${msg.id}-${msg.sendTime}-${msg.senderId}`"
              class="message-bubble"
              :class="{'is-me': msg.senderId === currentUserId}">
           <el-avatar

@@ -108,15 +108,15 @@
           <el-button type="primary" size="small" @click="fav()">{{
             isfav ? '已收藏' : '收藏'
           }}</el-button>
-          <el-button type="primary" size="small" @click="post()"
-            >投递</el-button
-          >
+          <el-button type="primary" size="small" @click="post()" :disabled="hasApplied">{{
+            hasApplied ? '已投递' : '投递'
+          }}</el-button>
         </div>
       </div>
     </div>
     <div class="side">
       <div class="comment-area">
-        <h2 style="text-align: center">在线交流：</h2>
+        <h2 style="text-align: center">评论区：</h2>
         <el-row v-for="item in comments" :key="item.comment.commentId">
           <el-col class="user">
             <el-popover placement="top-left" width="200" trigger="click">
@@ -284,15 +284,23 @@ export default {
       replyingCommentId: '',
       replyCommentContent: '',
       replyingReplyId: '',
+      hasApplied: false,
     }
   },
   mounted() {
     this.getComment()
     this.getFav()
-    console.log(this.job.hrIdPub)
     this.getCompanyInfo()
+    this.checkApplicationStatus()
   },
   methods: {
+    checkApplicationStatus() {
+      positionApply(this.job.positionId).then((res) => {
+        if (res.data === 'had applied') {
+          this.hasApplied = true
+        }
+      })
+    },
     cancel() {
       this.replyingUser = ''
       this.replyCommentContent = ''
@@ -390,13 +398,29 @@ export default {
       positionApply(this.job.positionId).then((res) => {
         if (res.data === 'success') {
           this.$message.success('投递成功')
+          this.hasApplied = true
           return
         }
         if (res.data === 'had applied') {
           this.$message.info('已投递')
+          this.hasApplied = true
           return
         }
-        this.$message.error('投递失败')
+        if (res.data === 'not logged in') {
+          this.$message.error('请先登录')
+          this.$router.push('/login')
+          return
+        }
+        if (res.data === 'no resume') {
+          this.$message.error('请先完善简历信息')
+          this.$router.push('/user/resume')
+          return
+        }
+        console.error('投递失败:', res)
+        this.$message.error('投递失败: ' + (res.data || '未知错误'))
+      }).catch(err => {
+        console.error('投递请求失败:', err)
+        this.$message.error('投递请求失败，请稍后重试')
       })
     },
   },

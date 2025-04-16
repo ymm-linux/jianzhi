@@ -105,7 +105,11 @@ export default {
       })
     },
     getThree(item){
-      return `${item[0].name}/${item[1].name}/${item[2].name}`
+      if (!item || !Array.isArray(item) || item.length === 0) {
+        return '';
+      }
+      const names = item.slice(0, 3).map(child => child.name || '');
+      return names.join('/');
     }
   }
 }

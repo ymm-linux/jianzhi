@@ -3,7 +3,7 @@
     <div slot="header">
         &nbsp;
     </div>
-    <el-button @click="skipUpdate()" type="warning" >新增投诉</el-button>
+    <el-button @click="skipUpdate()" type="warning" >发起投诉</el-button>
     <el-table
       ref="multipleTable"
       :loading="listLoading"
@@ -45,7 +45,7 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="新增投诉" :visible.sync="dialogVisible" width="30%" center>
+    <el-dialog title="发起投诉" :visible.sync="dialogVisible" width="30%" center>
      <!-- 隐藏的 ID 字段 -->
       <el-input type="textarea" :rows="2" v-model="content" />
       <span slot="footer" class="dialog-footer">

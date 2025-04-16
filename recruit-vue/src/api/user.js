@@ -29,7 +29,7 @@ export function userLogout(){
 
 //positionApply
 export function positionApply(id){
-    return request({url: '/user/apply/'+id, method: 'get'})
+    return request({url: '/user/apply/'+id, method: 'post'})
 }
 
 //favorOrNot 职位收藏与否
