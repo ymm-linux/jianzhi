@@ -416,25 +416,40 @@ export default {
     },
   },
   methods: {
+   resetOnboardingForm() {
+      this.onboardingForm = {
+        applicationId: '',
+        interviewTime: '',
+        interviewResult: '',
+        interview: '',
+        workTime: '',
+        salaryType: '',
+        salary: 0
+      };
+    },
     handleOnboarding(row) {
-      // this.$router.push({
-      //   path: '/onboarding-arrangement',
-      //   query: {
-      //     applicationId: row.applicationId
-      //   }
-      // })
-      this.onboardingForm.applicationId = row.applicationId
-      this.onboardingForm.salary = row.salary
-      this.onboardingForm.interviewResult = row.interviewResult
-      this.onboardingForm.interviewTime = row.interviewTime
-      this.onboardingForm.interview = row.interview
-      this.onboardingForm.workTime = row.workTime
-      this.onboardingForm.salaryType = row.salaryType
-      this.onboardingDialogVisible = true
-      // 重置表单（如果是编辑模式可以在这里填充已有数据）
+      // 重置表单数据
+      this.resetOnboardingForm();
+      
+      // 设置新的数据，确保从行数据中获取正确的值
+      this.onboardingForm = {
+        applicationId: row.applicationId,
+        interviewTime: row.interviewTime || '',
+        interviewResult: row.interviewResult || '',
+        interview: row.interview || '',
+        workTime: row.workTime ? row.workTime.split(' ')[0] : '', // 只取日期部分
+        salaryType: row.salaryType || '',
+        salary: row.salary || 0
+      };
+
+      // 重置表单验证状态
       this.$nextTick(() => {
-        this.$refs.onboardingForm?.resetFields()
-      })
+        if (this.$refs.onboardingForm) {
+          this.$refs.onboardingForm.clearValidate(); // 使用clearValidate而不是resetFields
+        }
+      });
+
+      this.onboardingDialogVisible = true;
     },
     // 新增提交方法
     submitOnboarding() {
@@ -447,16 +462,20 @@ export default {
             applicationId: this.onboardingForm.applicationId,
             interviewTime: this.onboardingForm.interviewTime,
             interviewResult: this.onboardingForm.interviewResult,
+            interview: this.onboardingForm.interview,
             workTime: this.onboardingForm.workTime + " 00:00:00", // 添加时间部分
             salaryType: this.onboardingForm.salaryType,
             salary: this.onboardingForm.salary
           };
+
+           this.$refs.onboardingForm?.resetFields();
 
           // 调用API方法
           submitOnboarding(formData)
             .then(() => {
               this.$message.success('入职安排提交成功');
               this.onboardingDialogVisible = false;
+              this.resetOnboardingForm();// 重置表单
               this.getList(); // 刷新列表数据
             })
             .catch(error => {

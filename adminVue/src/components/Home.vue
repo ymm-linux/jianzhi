@@ -22,40 +22,39 @@
       </el-col>
       <el-col :span="24" class="main">
         <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="collapsed">
-          <el-menu-item index="1">
-            <span slot="title" @click="pushRoute(1)">岗位列表</span>
+          <el-menu-item index="1" @click="pushRoute(1)">
+            岗位列表
           </el-menu-item>
-          <el-menu-item index="2">
-            <span slot="title" @click="pushRoute(2)">应聘记录</span>
+          <el-menu-item index="2" @click="pushRoute(2)">
+            应聘记录
           </el-menu-item>
-          <el-menu-item index="3"  >
-            <span slot="title" @click="pushRoute(3)">职业分类管理</span>
+          <el-menu-item index="3" @click="pushRoute(3)">
+            职业分类管理
           </el-menu-item>
-          <el-menu-item index="4" >
-            <span slot="title" @click="pushRoute(4)">学历参数</span>
+          <el-menu-item index="4" @click="pushRoute(4)">
+            学历参数
           </el-menu-item>
-          <el-menu-item index="5"  >
-            <span slot="title" @click="pushRoute(5)">求职用户</span>
+          <el-menu-item index="5" @click="pushRoute(5)">
+            求职用户
           </el-menu-item>
-          <el-menu-item index="7"  >
-            <span slot="title" @click="pushRoute(6)">企业用户</span>
+          <el-menu-item index="7" @click="pushRoute(6)">
+            企业用户
           </el-menu-item>
-          <el-menu-item index="8"  >
-            <span slot="title" @click="pushRoute(7)">投诉反馈</span>
+          <el-menu-item index="8" @click="pushRoute(7)">
+            投诉反馈
           </el-menu-item>
-          <el-menu-item index="9"  >
-            <span slot="title" @click="pushRoute(8)">公告管理</span>
+          <el-menu-item index="9" @click="pushRoute(8)">
+            公告管理
           </el-menu-item>
-          <el-menu-item index="10"  >
-            <span slot="title" @click="pushRoute(9)">工时薪资</span>
+          <el-menu-item index="10" @click="pushRoute(9)">
+            工时薪资
           </el-menu-item>
-          <el-menu-item index="11"  >
-            <span slot="title" @click="pushRoute(10)">在岗人员</span>
+          <el-menu-item index="11" @click="pushRoute(10)">
+            在岗人员
           </el-menu-item>
-          <el-menu-item index="12"  >
-            <span slot="title" @click="pushRoute(11)">佣金统计</span>
+          <el-menu-item index="12" @click="pushRoute(11)">
+            佣金统计
           </el-menu-item>
-
         </el-menu>
         <section class="content-container">
           <div class="grid-content bg-purple-light">
@@ -104,14 +103,6 @@ export default {
   },
   methods: {
     pushRoute(index) {
-     if (this.$route.path !== index) {
-        this.$router.push(index).catch(err => {
-          // 捕获 NavigationDuplicated 错误
-          if (err.name !== 'NavigationDuplicated') {
-            throw err; // 如果不是重复导航错误，则抛出
-          }
-        });
-      }
 
       switch(index) {
         case 1:
@@ -219,7 +210,6 @@ export default {
       }
     }
     .logo {
-      //width:230px;
       height: 60px;
       font-size: 22px;
       padding-left: 20px;
@@ -252,7 +242,6 @@ export default {
   }
   .main {
     display: flex;
-    // background: #324057;
     position: absolute;
     top: 60px;
     bottom: 0px;
@@ -260,15 +249,21 @@ export default {
     aside {
       flex: 0 0 230px;
       width: 230px;
-      // position: absolute;
-      // top: 0px;
-      // bottom: 0px;
-      .el-menu-vertical-demo-1{
-        width: 230px;
-      }
       .el-menu {
         height: 100%;
-       background-color: #d5d8db;
+        background-color: #d5d8db;
+        .el-menu-item {
+          padding: 0 20px;
+          height: 50px;
+          line-height: 50px;
+          &:hover {
+            background-color: #c0c4cc;
+          }
+          &.is-active {
+            background-color: #b3b7bf;
+            color: #303133;
+          }
+        }
       }
       .collapsed {
         width: 60px;
@@ -282,31 +277,20 @@ export default {
           z-index: 99999;
           height: auto;
           display: none;
-
         }
       }
     }
     .menu-collapsed {
-      // flex: 0 0 60px;
       width: 60px;
-
     }
     .menu-expanded {
-      // flex: 0 0 230px;
       width: 230px;
     }
     .content-container {
-      // background: #f1f2f7;
       flex: 1;
-      // position: absolute;
-      // right: 0px;
-      // top: 0px;
-      // bottom: 0px;
-      // left: 230px;
       overflow-y: scroll;
       padding: 20px;
       .breadcrumb-container {
-        //margin-bottom: 15px;
         .title {
           width: 200px;
           text-align: left;

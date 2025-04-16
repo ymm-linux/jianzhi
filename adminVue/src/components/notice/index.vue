@@ -25,8 +25,16 @@
       <el-table-column label="公告ID" align="center" prop="noticeId"/>
       <el-table-column label="公告标题" align="center" prop="noticeTitle"/>
       <el-table-column label="公告内容" align="center" prop="noticeContent"/>
-      <el-table-column label="公告类型" align="center" prop="noticeType"/>
-      <el-table-column label="发布状态" align="center" prop="status"/>
+      <el-table-column label="公告类型" align="center" prop="noticeType">
+        <template slot-scope="scope">
+          {{ formatNoticeType(scope.row.noticeType) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="发布状态" align="center" prop="status">
+        <template slot-scope="scope">
+          {{ formatStatus(scope.row.status) }}
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column
         fixed="right"
@@ -160,23 +168,28 @@ export default {
     },
     // 新增以下方法
     submitForm() {
-      console.log(sessionStorage.getItem("userName"),'sessionStorage.getItem("userName")')
-      this.form.createBy = sessionStorage.getItem("userName")
-      // this.form.createTime = new Date()
-      // this.form.updateBy = sessionStorage.getItem("userName")
-      // this.form.updateTime = new Date()
       this.$refs["form"].validate(valid => {
         if (valid) {
+          // 只提取需要的字段
+          const submitData = {
+            noticeId: this.form.noticeId,
+            noticeTitle: this.form.noticeTitle,
+            noticeType: this.form.noticeType,
+            noticeContent: this.form.noticeContent,
+            status: this.form.status,
+            remark: this.form.remark
+          };
+
           if (this.form.noticeId) {
             // 修改公告
-            updateNotice(this.form).then(response => {
+            updateNotice(submitData).then(response => {
               this.$message.success("修改成功");
               this.open = false;
               this.getListData();
             });
           } else {
             // 新增公告
-            addNotice(this.form).then(response => {
+            addNotice(submitData).then(response => {
               this.$message.success("新增成功");
               this.open = false;
               this.getListData();
@@ -243,7 +256,12 @@ export default {
       this.reset();
       const noticeId = row.noticeId || this.ids
       getNotice(noticeId).then(response => {
-        this.form = response.data;
+        this.form = {
+          ...this.form,  // 保留原有表单的默认值
+          ...response.data  // 用响应数据覆盖对应的字段
+        };
+        console.log(this.form,'this.form')
+        console.log(response.data,'response.data')
         this.open = true;
         this.title = "修改公告管理";
       });
@@ -272,6 +290,23 @@ export default {
     educationFilter(id) {
       const education = this.educations.find(item => item.id === id);
       return education ? education.name : '不限';
+    },
+    // 格式化公告类型
+    formatNoticeType(type) {
+      const typeMap = {
+        '1': '系统公告',
+        '2': '活动公告',
+        '3': '紧急通知'
+      };
+      return typeMap[type] || '未知类型';
+    },
+    // 格式化发布状态
+    formatStatus(status) {
+      const statusMap = {
+        '0': '草稿',
+        '1': '已发布'
+      };
+      return statusMap[status] || '未知状态';
     },
   }
 }

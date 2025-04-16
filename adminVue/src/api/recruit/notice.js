@@ -30,7 +30,7 @@ export function getLastNotice(query) {
 // 新增公告管理
 export function addNotice(data) {
   return request({
-    url: '/recruit/notice',
+    url: '/recruit/notice/add',
     method: 'post',
     data: data
   })
@@ -39,8 +39,8 @@ export function addNotice(data) {
 // 修改公告管理
 export function updateNotice(data) {
   return request({
-    url: '/recruit/notice',
-    method: 'put',
+    url: '/recruit/notice/edit',
+    method: 'post',
     data: data
   })
 }
