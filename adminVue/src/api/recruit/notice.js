@@ -46,9 +46,7 @@ export function updateNotice(data) {
 }
 
 // 删除公告管理
-export function delNotice(noticeId) {
-  return request({
-    url: '/recruit/notice/' + noticeId,
-    method: 'delete'
-  })
+
+export function delNotice(id){
+    return request({url: `/recruit/notice/${id}/del`, method:'post'})
 }

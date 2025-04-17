@@ -95,7 +95,7 @@ Vue.filter('setAvatar',function (url){
 // 全局过滤器定义
 Vue.filter('interviewResult', value => {
   const map = { '通过': '通过', '未通过': '未通过','待定': '待定' }
-  return map[value] || '未知状态'
+  return map[value] || ''
 })
 
 // 全局过滤器定义

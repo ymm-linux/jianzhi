@@ -227,7 +227,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delNotice(row.id)
+        delNotice(row.noticeId)
           .then(res => {
             this.getListData();
             this.$message({
@@ -306,7 +306,7 @@ export default {
         '0': '草稿',
         '1': '已发布'
       };
-      return statusMap[status] || '未知状态';
+      return statusMap[status] || '';
     },
   }
 }

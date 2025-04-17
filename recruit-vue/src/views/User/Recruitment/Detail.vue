@@ -271,11 +271,25 @@ export default {
     Tool,
   },
   data() {
+    const jobData = localStorage.getItem('job')
+    const defaultJob = {
+      title: '',
+      salaryDown: 0,
+      salaryUp: 0,
+      workProvince: '',
+      workCity: '',
+      quantity: 0,
+      educationId: 0,
+      categoryId: 0,
+      requirement: '',
+      positionId: 0,
+      hrIdPub: 0
+    }
     return {
       deList: [],
-      job: JSON.parse(localStorage.getItem('job')),
-      categoryMap: JSON.parse(localStorage.getItem('categoryMap')),
-      educationMap: JSON.parse(localStorage.getItem('educationMap')),
+      job: jobData ? JSON.parse(jobData) : defaultJob,
+      categoryMap: JSON.parse(localStorage.getItem('categoryMap') || '{}'),
+      educationMap: JSON.parse(localStorage.getItem('educationMap') || '{}'),
       textarea: '',
       comments: [],
       isfav: false,
@@ -285,6 +299,13 @@ export default {
       replyCommentContent: '',
       replyingReplyId: '',
       hasApplied: false,
+    }
+  },
+  created() {
+    if (!this.job.positionId) {
+      this.$message.error('职位信息不存在')
+      this.$router.push('/user/recruitment')
+      return
     }
   },
   mounted() {
