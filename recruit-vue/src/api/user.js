@@ -149,3 +149,7 @@ export  function listApp(id){
 export function getCompanyInfo(id){
     return request({url: `/user/company/${id}`})
 }
+
+export function updateOnboardingRuzhi(application){
+    return request({url: '/application/updateOnboardingRuzhi', method: 'post', data: application})
+}
