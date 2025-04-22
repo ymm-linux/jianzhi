@@ -3,7 +3,7 @@
     <div id="applications">
       <div class="dynamic">
         <div v-show="appList.length===0" class="empty-tip">暂无数据</div>
-        <div class="notNull" v-for="job in appList" :key="job.positionId">
+        <div class="notNull" v-for="job in appList" :key="job.applicationId">
           <header>
             <h3>{{job.title}}</h3>
             <p style="color:red">{{job.salaryDown}}~{{job.salaryUp}}（元/月）</p>
@@ -12,33 +12,52 @@
             {{job.requirement}}
           </article>
           <footer>
-            <i style="justify-content:center" class="el-icon-thumb" v-show="job.statePub===1" @click="getDetail(job)">查看详情</i>
-            <i style="justify-content:center" v-show="job.statePub!==1"></i>
-            <div style="justify-content:flex-end;color:red;" v-if="job.statePub!==1">
+            <i style="justify-content:center" class="el-icon-thumb" v-show="job.statePub===2" @click="getDetail(job)">查看详情</i>
+            <i style="justify-content:center" v-show="job.statePub!==2"></i>
+            <div style="justify-content:flex-end;color:red;" v-if="job.statePub===3">
               <i style="font-size:26px;" class="el-icon-error"></i>
               已下架
             </div>
-            <div style="justify-content:flex-end;color:green;" v-if="job.applicationState===1&&job.statePub===1">
+            <div style="justify-content:flex-end;color:green;" v-if="job.applicationState===1&&job.statePub===2">
               <i style="font-size:26px;" class="el-icon-success"></i>
               已通过
             </div>
-            <div style="justify-content:flex-end;color:red;" v-if="job.applicationState===2&&job.statePub===1">
+            <div style="justify-content:flex-end;color:red;" v-if="job.applicationState===2&&job.statePub===2">
               <i style="font-size:26px;" class="el-icon-error"></i>
               未通过
             </div>
-            <div style="justify-content:flex-end;color:blue;" v-if="job.applicationState===0&&job.statePub===1">
+            <div style="justify-content:flex-end;color:blue;" v-if="job.applicationState===0&&job.statePub===2">
               <i style="font-size:26px;" class="el-icon-question"></i>
               请等待
             </div>
-            <!-- 添加在线交流按钮 -->
-            <el-button
-              type="primary"
-              size="mini"
-              @click="openChat(job)"
-              v-if="job.statePub===1"
-            >
-              在线交流
-            </el-button>
+            
+            <div >
+                  <!-- 添加入职登记按钮，仅在面试通过时显示 -->
+              <el-button
+                type="warning"
+                size="mini"
+                @click="handleOnboarding(job)"
+                v-if="job.applicationState===1 && job.statePub===2"
+                :disabled="job.registerStatus === '登记已审核'">
+                {{ 
+                  !job.registerStatus || job.registerStatus === '未登记' ? '入职登记' : 
+                  job.registerStatus === '登记待审核' ? '重新登记' : 
+                  '查看登记'
+                }}
+              </el-button>
+              
+              <!-- 添加在线交流按钮 -->
+              <el-button
+                type="primary"
+                size="mini"
+                @click="openChat(job)"
+                v-if="job.statePub===2"
+              >
+                在线交流
+              </el-button>
+          
+            </div>
+            
           </footer>
           <el-row v-if="job.reply" class="job-reply">
             <el-col :span="4">
@@ -52,7 +71,7 @@
       </div>
     </div>
 
- <!-- 聊天窗口 -->
+    <!-- 聊天窗口 -->
     <div v-show="chatting" class="chat-container">
       <div class="chat-header">
         <div class="chat-title">
@@ -99,11 +118,71 @@
       </div>
     </div>
 
-   </main>
+    <!-- 入职登记对话框 -->
+    <el-dialog 
+      :title="`入职登记${onboardingForm.registerStatus === '登记已审核' ? '(已审核)' : ''}`" 
+      :visible.sync="onboardingDialogVisible" 
+      width="600px"
+    >
+      <el-form :model="onboardingForm" :rules="onboardingRules" ref="onboardingForm" label-width="120px">
+        <el-input v-model="onboardingForm.applicationId" type="hidden"></el-input>
+        <el-form-item label="岗位名称">
+          <el-input v-model="onboardingForm.positionTitle" :readonly="onboardingForm.registerStatus === '登记已审核'"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人">
+          <el-input v-model="onboardingForm.lxr" :readonly="onboardingForm.registerStatus === '登记已审核'"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人电话">
+          <el-input v-model="onboardingForm.lxrdh" :readonly="onboardingForm.registerStatus === '登记已审核'"></el-input>
+        </el-form-item>
+        <el-form-item label="紧急联系人">
+          <el-input v-model="onboardingForm.jjlxr" :readonly="onboardingForm.registerStatus === '登记已审核'"></el-input>
+        </el-form-item>
+        <el-form-item label="紧急联系人电话">
+          <el-input v-model="onboardingForm.jjlxrdh" :readonly="onboardingForm.registerStatus === '登记已审核'"></el-input>
+        </el-form-item>
+        <el-form-item label="薪资类型">
+          <el-select 
+            v-model="onboardingForm.salaryType" 
+            :disabled="onboardingForm.registerStatus === '登记已审核'"
+            placeholder="请选择薪资类型">
+            <el-option label="时薪" value="时薪"></el-option>
+            <el-option label="日薪" value="日薪"></el-option>
+            <el-option label="月薪" value="月薪"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="薪资">
+          <el-input-number 
+            v-model="onboardingForm.salary" 
+            :disabled="onboardingForm.registerStatus === '登记已审核'"
+            :min="0" 
+            :step="1000"></el-input-number>
+        </el-form-item>
+        <el-form-item label="入职时间">
+          <el-date-picker
+            v-model="onboardingForm.workTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            :disabled="onboardingForm.registerStatus === '登记已审核'"
+            placeholder="选择入职时间">
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="onboardingDialogVisible = false">关 闭</el-button>
+        <el-button 
+          type="primary" 
+          @click="submitOnboarding"
+          v-if="onboardingForm.registerStatus !== '登记已审核'">
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
+  </main>
 </template>
 
 <script>
-import { listApp } from "@/api/user";
+import { listApp,updateOnboardingRuzhi } from "@/api/user";
 import { getMessages, sendMessage, markAsRead } from "@/api/messages";
 
 export default {
@@ -119,6 +198,34 @@ export default {
       currentUserId: '', // 当前用户ID
       currentUserAvatar: '', // 当前用户头像
       pollingTimer: null, // 轮询定时器
+      onboardingDialogVisible: false,
+      onboardingForm: {
+        applicationId: '',
+        positionTitle: '',
+        lxr: '',
+        lxrdh: '',
+        jjlxr: '',
+        jjlxrdh: '',
+        salary: 0,
+        salaryType: '',
+        workTime: ''
+      },
+      onboardingRules: {
+        jjlxr: [
+          { required: true, message: '请输入紧急联系人姓名', trigger: 'blur' }
+        ],
+        jjlxrdh: [
+          { required: true, message: '请输入联系电话', trigger: 'blur' },
+          { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
+        ],
+        salary: [
+          { required: true, message: '请输入薪资', trigger: 'blur' }
+        ],
+        workTime: [
+          { required: true, message: '请选择入职时间', trigger: 'change' }
+        ]
+      },
+      submitting: false
     };
   },
   created() {
@@ -242,7 +349,49 @@ export default {
     formatTime(time) {
       return new Date(time).toLocaleString();
     },
-  },
+    handleOnboarding(job) {
+      console.log('job:',job);
+      this.onboardingForm = {
+        applicationId: job.applicationId,
+        positionTitle: job.title || '',
+        lxr: job.lxr || '',
+        lxrdh: job.lxrdh || '',
+        jjlxr: job.jjlxr || '',
+        jjlxrdh: job.jjlxrdh || '',
+        salary: job.salary || 0,
+        salaryType: job.salaryType || '',
+        workTime: job.workTime ? new Date(job.workTime) : ''
+      };
+      this.onboardingDialogVisible = true;
+    },
+    submitOnboarding() {
+      this.$refs.onboardingForm.validate((valid) => {
+        if (valid) {
+          const onboardingData = {
+            applicationId: this.onboardingForm.applicationId,
+            jjlxr: this.onboardingForm.jjlxr,
+            jjlxrdh: this.onboardingForm.jjlxrdh,
+            salaryType: this.onboardingForm.salaryType,
+            salary: this.onboardingForm.salary,
+            workTime: this.onboardingForm.workTime
+          };
+          updateOnboardingRuzhi(onboardingData)
+            .then(res => {
+              this.$message({
+                type: 'success',
+                message: '入职登记提交成功，等待管理员审核'
+              });
+              this.getData(); // 刷新列表
+              this.onboardingDialogVisible = false;
+            })
+            .catch(error => {
+              console.log('提交报错:',error);
+              this.$message.error('提交失败');
+            });
+        }
+      });
+    }
+  }
 };
 </script>
 
@@ -383,6 +532,12 @@ fontColor=rgb(109,109,109)
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.el-button--warning {
+  background-color: #e6a23c;
+  border-color: #e6a23c;
+  color: #fff;
 }
 
 </style>

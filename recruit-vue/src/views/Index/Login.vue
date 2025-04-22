@@ -36,6 +36,9 @@
 
           <br>
           <button @click="login()" id="loginBt">登录<i v-if="loading" class="el-icon-loading"></i></button>
+          <div class="login-tips">
+            若为个人招聘，请选择企业用户
+          </div>
           <el-dialog
             title="用户注册"
             :visible.sync="register"
@@ -282,4 +285,10 @@ main
   &>p
     font-size 13px
     color color
+
+.login-tips
+  font-size 18px
+  position absolute
+  bottom -30px
+  color #FF5263
 </style>

@@ -2,27 +2,12 @@
   <div id="recruit">
     <div class="recTop">
       <div id="search-input">
-        <el-select
-          style="width: 120px"
-          @change="getCitys"
-          v-model="selectProVin"
-          @visible-change="getPro"
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in provinces"
-            :key="item.adcode"
-            :label="item.name"
-            :value="item.name"
-          >
+        <el-select style="width: 120px" @change="getCitys" v-model="selectProVin" @visible-change="getPro"
+          placeholder="请选择">
+          <el-option v-for="item in provinces" :key="item.adcode" :label="item.name" :value="item.name">
           </el-option>
         </el-select>
-        <el-input
-          @keyup.enter.native="getData"
-          v-model="keywords"
-          style="width: 80%"
-          placeholder="搜索职位"
-        ></el-input>
+        <el-input @keyup.enter.native="getData" v-model="keywords" style="width: 80%" placeholder="搜索职位"></el-input>
         <el-button @click="getData" type="danger">搜索</el-button>
       </div>
       <div id="city-list">
@@ -30,14 +15,8 @@
         <div v-if="cities.length == 0">
           <span>无对应市级</span>
         </div>
-        <span
-          v-else
-          :class="{ 'active-city': selectCity === city.name }"
-          @click="selectCity = city.name"
-          v-for="city in cities"
-          :key="city.name"
-          >{{ city.name }}</span
-        >
+        <span v-else :class="{ 'active-city': selectCity === city.name }" @click="selectCity = city.name"
+          v-for="city in cities" :key="city.name">{{ city.name }}</span>
       </div>
       <div id="screening">
         <div>
@@ -52,12 +31,8 @@
         </div>
         <div class="sc-type">
           <el-select v-model="educationLevel">
-            <el-option
-              v-for="option in educations"
-              :key="option.id"
-              :label="option.name"
-              :value="option.id"
-            ></el-option>
+            <el-option v-for="option in educations" :key="option.id" :label="option.name"
+              :value="option.id"></el-option>
           </el-select>
         </div>
         <div class="sc-type">
@@ -68,71 +43,57 @@
     <div class="rec-bottom">
       <div class="recList">
         <el-row class="pagination">
-          <el-pagination
-            @current-change="handleCurrentChange"
-            :current-page.sync="curPage"
-            :page-size="pageSize"
-            layout="total, prev, pager, next, jumper"
-            :total="total"
-          >
+          <el-pagination @current-change="handleCurrentChange" :current-page.sync="curPage" :page-size="pageSize"
+            layout="total, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </el-row>
-        <el-row
-          v-for="job in jobList"
-          style="
+        <el-row v-for="job in jobList" style="
             height: 120px;
             background: #fff;
             border: 1px solid #f5f5f5;
             margin-bottom: 5px;
             overflow: hidden;
-          "
-          :key="job.positionId"
-        >
-          <el-col :span="8">
-            <el-row
-              style="
+          " :key="job.positionId">
+          <el-col :span="5">
+            <el-row style="
                 margin-top: 20px;
                 text-align: center;
                 height: 30px;
                 overflow: hidden;
-              "
-              ><h3>{{ job.workCity }} | {{ job.title }}</h3></el-row
-            >
-            <el-row
-              style="
+              ">
+              <h3>{{ job.workCity }} | {{ job.title }}</h3>
+            </el-row>
+            <el-row style="
                 margin-top: 20px;
                 text-align: center;
                 color: red;
                 font-size: 10px;
-              "
-            >
+              ">
               <div style="font-size: 18px">{{ getSalary(job) }}</div>
-              元/月
+              {{ `元/${job.salaryType}` }}
             </el-row>
           </el-col>
-          <el-col :span="8" style="margin-top: 30px; color: blue">
-            <el-row style="margin-top: 10px; margin-left: 40px">{{
+          <el-col :span="5" style="margin-top: 30px; color: blue">
+            <el-row style="margin-top: 10px; margin-left: 30px">{{
               getEdu(job)
             }}</el-row>
-            <el-row
-              style="margin-top: 10px; margin-left: 40px; color: #343a86"
-              >{{ job.companyName }}</el-row
-            >
+            <el-row style="margin-top: 10px; margin-left: 30px; color: #343a86">{{ job.companyName }}</el-row>
           </el-col>
-          <el-col
-            :span="8"
-            style="
+          <el-col :span="4" style="margin-top: 30px; color: blue">
+            <el-row style="margin-top: 10px; margin-left: 10px; color: #343a86">{{ job.companyName }}</el-row>
+          </el-col>
+            <el-col :span="5" style="margin-top: 30px; color: blue">
+            <el-col style="margin-top: 10px; margin-left: 10px; color: #343a86">{{ job.workTimeBegin }}至{{ job.workTimeEnd }}</el-col>
+          </el-col>
+          <el-col :span="4" style="
               display: flex;
               justify-content: center;
               flex-direction: column;
               align-items: center;
               height: 100%;
-            "
-          >
+            ">
             <el-row>
-              <el-button size="small" type="primary" @click="getDetail(job)"
-                >查看详情</el-button
-              >
+              <el-button size="small" type="primary" @click="getDetail(job)">查看详情</el-button>
             </el-row>
           </el-col>
         </el-row>
@@ -279,17 +240,17 @@ export default {
     },
     getData() {
       this.jobList = []
-      let categoryId = 0,educationId=0,selectProVin='',selectCity = ''
+      let categoryId = 0, educationId = 0, selectProVin = '', selectCity = ''
       if (this.value.length > 0) {
-          categoryId = this.value[1]
+        categoryId = this.value[1]
       }
-      if(this.selectProVin !== '全部') {
+      if (this.selectProVin !== '全部') {
         selectProVin = this.selectProVin
       }
-      if(this.selectCity !== '全部') {
+      if (this.selectCity !== '全部') {
         selectCity = this.selectCity
       }
-      searchPosition(this.keywords,categoryId,this.educationLevel,selectProVin,selectCity,this.curPage,5).then((res) => {
+      searchPosition(this.keywords, categoryId, this.educationLevel, selectProVin, selectCity, this.curPage, 5).then((res) => {
         this.jobList = res.data.posInfo.list
         this.total = res.data.posInfo.total
         this.curPage = res.data.posInfo.pageNum

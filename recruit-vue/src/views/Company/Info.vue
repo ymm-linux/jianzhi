@@ -1,6 +1,9 @@
 <template>
   <div id="form-container">
     <h1>企业信息</h1>
+    <div class="login-tips">
+      若为个人招聘，则公司名称可填为姓名 + 招聘
+    </div>
     <br />
     <br />
     <transition name="slide-fade">
@@ -126,7 +129,7 @@
           status-icon
           prop="createTime"
           label="注册日期"
-          :rules="[{ required: true, message: '请选择日期', trigger: 'blur' }]"
+          :rules="[{ required: false, message: '请选择日期', trigger: 'blur' }]"
         >
           <el-date-picker
             size="small"
@@ -161,9 +164,9 @@ export default {
       active: 1,
       detailAddress: '',
       pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
+        //disabledDate(time) {
+        //  return time.getTime() > Date.now()
+        //},
         shortcuts: [
           {
             text: '今天',
@@ -211,11 +214,11 @@ export default {
           this.company.hrId = res.data.hr.hrId
           this.company.companyName = res.data.hr.companyName
           this.company.companyAddress = res.data.hr.companyAddress
-          this.company.createTime = res.data.hr.createTime.time
           this.company.description = res.data.hr.description
           this.company.hrName = res.data.hr.hrName
           this.company.hrEmail = res.data.hr.hrEmail
           this.company.hrMobile = res.data.hr.hrMobile
+          this.company.createTime = res.data.hr.createTimeStr
         }
       })
     },
@@ -227,13 +230,28 @@ export default {
       this.getInfo()
     },
     save() {
-      hrInfoUpdate(this.company).then((res) => {
-        if (res.data === 'success') {
-          this.$message.success('保存成功')
-          this.$router.push('/company/jobManage')
-          return
+     console.log('this.company:',this.company)
+     const dataParam = {
+          hrId : this.company.hrId,
+          companyName: this.company.companyName,
+          companyAddress: this.company.companyAddress,
+          createTimeStr: this.company.createTime,
+          description:  this.company.description,
+          hrName:  this.company.hrName,
+          hrEmail:  this.company.hrEmail,
+          hrMobile:  this.company.hrMobile
+      };
+      this.$refs.ruleForm.validate((valid) => {
+        if(valid) {
+          hrInfoUpdate(dataParam).then((res) => {
+            if (res.data === 'success') {
+              this.$message.success('保存成功')
+              this.$router.push('/company/jobManage')
+              return
+            }
+            this.$message.success('保存失败')
+          })
         }
-        this.$message.success('保存失败')
       })
     },
   },
@@ -291,5 +309,9 @@ p {
   /* .slide-fade-leave-active for below version 2.1.8 */ {
   transform: translateX(20px);
   opacity: 0;
+}
+.login-tips {
+  font-size: 18px;
+  color: #FF5263;
 }
 </style>

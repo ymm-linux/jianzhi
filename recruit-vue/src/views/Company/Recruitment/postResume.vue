@@ -61,10 +61,10 @@
           <el-button @click="deal(scope.row, true)" type="danger" size="mini">
             拒绝
           </el-button>
-          <!-- 新增入职安排按钮 -->
+          <!-- 新增面试评价按钮 -->
           <el-button @click="handleOnboarding(scope.row)" type="warning" size="mini" class="action-btn"
             >
-            入职安排
+            面试评价
           </el-button>
         </template>
       </el-table-column>
@@ -211,13 +211,13 @@
         <el-button type="primary" @click="save()">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="入职安排" :visible.sync="onboardingDialogVisible" width="50%" :close-on-click-modal="false">
+    <el-dialog title="面试评价" :visible.sync="onboardingDialogVisible" width="50%" :close-on-click-modal="false">
       <el-form ref="onboardingForm" :model="onboardingForm" label-width="120px" :rules="onboardingRules">
         <el-form-item label="面试时间" prop="interviewTime">
         <el-date-picker 
           v-model="onboardingForm.interviewTime" 
           type="datetime" 
-          placeholder="选择面试时间" 
+          placeholder="请选择面试时间"
           value-format="yyyy-MM-dd HH:mm:ss"
           style="width: 100%">
         </el-date-picker>
@@ -234,30 +234,10 @@
           <el-option label="待定" value="待定"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="面试评价" prop="interviewer">
+      <el-form-item label="面试评价" prop="interview">
         <el-input v-model="onboardingForm.interview" placeholder="请输入面试评价"></el-input>
       </el-form-item>
-
-        <el-form-item label="入职时间" prop="workTime">
-          <el-date-picker v-model="onboardingForm.workTime" type="date" placeholder="选择入职日期" value-format="yyyy-MM-dd"
-            style="width: 100%"></el-date-picker>
-        </el-form-item>
-
-
-        <el-form-item label="薪资类型" prop="salaryType">
-          <el-select v-model="onboardingForm.salaryType" placeholder="请选择薪资类型" style="width: 100%">
-            <el-option v-for="item in salaryTypeOptions" :key="item.value" :label="item.label"
-              :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="薪资（元）" prop="salary">
-          <el-input-number v-model="onboardingForm.salary" :min="0" :step="1000" controls-position="right"
-            style="width: 100%"></el-input-number>
-          <span style="margin-left: 10px;"></span>
-        </el-form-item>
-      </el-form>
-
+    </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="onboardingDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitOnboarding" :loading="submitting">
@@ -334,7 +314,7 @@ export default {
       currentUserId: '',
       currentUserAvatar: '',
       pollingTimer: null,
-      // 新增入职安排相关数据
+      // 新增面试评价相关数据
       onboardingDialogVisible: false,
       onboardingForm: {
         applicationId: '',
@@ -436,10 +416,7 @@ export default {
         applicationId: row.applicationId,
         interviewTime: row.interviewTime || '',
         interviewResult: row.interviewResult || '',
-        interview: row.interview || '',
-        workTime: row.workTime ? row.workTime.split(' ')[0] : '', // 只取日期部分
-        salaryType: row.salaryType || '',
-        salary: row.salary || 0
+        interview: row.interview || ''
       };
 
       // 重置表单验证状态
@@ -462,10 +439,7 @@ export default {
             applicationId: this.onboardingForm.applicationId,
             interviewTime: this.onboardingForm.interviewTime,
             interviewResult: this.onboardingForm.interviewResult,
-            interview: this.onboardingForm.interview,
-            workTime: this.onboardingForm.workTime + " 00:00:00", // 添加时间部分
-            salaryType: this.onboardingForm.salaryType,
-            salary: this.onboardingForm.salary
+            interview: this.onboardingForm.interview
           };
 
            this.$refs.onboardingForm?.resetFields();
@@ -473,7 +447,7 @@ export default {
           // 调用API方法
           submitOnboarding(formData)
             .then(() => {
-              this.$message.success('入职安排提交成功');
+              this.$message.success('面试评价提交成功');
               this.onboardingDialogVisible = false;
               this.resetOnboardingForm();// 重置表单
               this.getList(); // 刷新列表数据
@@ -803,7 +777,7 @@ export default {
     font-size: 12px;
   }
 
-  /* 入职安排按钮的特殊状态 */
+  /* 面试评价按钮的特殊状态 */
   .el-button--warning:disabled {
     opacity: 0.6;
     /* 禁用时降低透明度 */

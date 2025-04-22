@@ -87,29 +87,29 @@
           multipleSelection: null,
           firstOptions: [
             {
-              value: '餐饮服务',
-              label: '餐饮服务'
+              value: '学术研究',
+              label: '学术研究'
             }, {
-              value: '人事/财政/财务',
-              label: '人事/财政/财务'
+              value: '市场营销',
+              label: '市场营销'
             }, {
-              value: '超市/零售',
-              label: '超市/零售'
+              value: '技术开发',
+              label: '技术开发'
             }, {
-              value: '互联网/IT',
-              label: '互联网/IT'
+              value: '文化艺术',
+              label: '文化艺术'
             }, {
-              value: '销售/采购',
-              label: '销售/采购'
+              value: '校园服务',
+              label: '校园服务'
             }, {
-              value: '家政/保洁',
-              label: '家政/保洁'
+              value: '创意设计',
+              label: '创意设计'
             }, {
-              value: '物流/仓储/司机',
-              label: '物流/仓储/司机'
+              value: '体育健身',
+              label: '体育健身'
             }, {
-              value: '运动/健身',
-              label: '运动/健身'
+              value: '教育辅导',
+              label: '教育辅导'
             }
           ],
           categoryId: '',
@@ -227,14 +227,14 @@
             .catch(function(error) {
               console.log(error);
             });
-         
+
           }).catch(() => {
             this.$message({
               type: 'info',
               message: '已取消删除'
-            });          
+            });
           });
- 
+
         },
         handleEdit(index,row){
           localStorage.setItem("urlInfo",JSON.stringify(row))

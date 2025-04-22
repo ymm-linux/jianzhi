@@ -130,13 +130,29 @@ export function delUser(id){
     return request({url: '/manager/user/'+id+'/del', method: 'post'})
 }
 
-//delPosition
-export function delPosition(id){
-    return request({url: `/manager/position/${id}/del`, method:'post'})
+// 更新岗位信息
+export function updatePosition(position) {
+  return request({
+    url: '/manager/position/update',
+    method: 'post',
+    data: position
+  })
 }
-//listPosition
-export function listPosition(){
-    return request({url: '/manager/position/list', method:'get'})
+
+// 删除岗位
+export function delPosition(id) {
+  return request({
+    url: `/manager/position/${id}/del`,
+    method: 'post'
+  })
+}
+
+// 获取岗位列表
+export function listPosition() {
+  return request({
+    url: '/manager/position/list',
+    method: 'get'
+  })
 }
 
 //listApplication
@@ -147,4 +163,93 @@ export function listApplication(){
 //delApplication
 export function delApplication(id){
     return request({url: `/manager/application/${id}/del`, method:'post'})
+}
+
+// 岗位审核
+export function auditPosition(positionId) {
+  return request({
+    url: '/position/audit',
+    method: 'post',
+    data: { positionId }
+  })
+}
+
+// 提交入职登记
+export function submitEmployment(data) {
+  return request({
+    url: '/employment/submit',
+    method: 'post',
+    data
+  })
+}
+
+// 获取入职登记列表
+export function listEmployment() {
+  return request({
+    url: '/employment/list',
+    method: 'get'
+  })
+}
+
+// 审核入职登记
+export function auditEmployment(data) {
+  return request({
+    url: '/employment/audit',
+    method: 'post',
+    data
+  })
+}
+
+// 存档入职记录
+export function archiveEmployment(applicationId) {
+  return request({
+    url: '/employment/archive',
+    method: 'post',
+    data: { applicationId }
+  })
+}
+
+// 发布岗位
+export function publishPosition(positionId) {
+  return request({
+    url: '/position/publish',
+    method: 'post',
+    data: { positionId }
+  })
+}
+
+// 下架岗位
+export function unpublishPosition(positionId) {
+  return request({
+    url: '/position/unpublish',
+    method: 'post',
+    data: { positionId }
+  })
+}
+
+// 提交发布岗位
+export function submitPosition(positionId) {
+  return request({
+    url: '/position/submit',
+    method: 'post',
+    data: { positionId }
+  })
+}
+
+// 拒绝岗位
+export function rejectPosition(positionId) {
+  return request({
+    url: '/position/reject',
+    method: 'post',
+    data: { positionId }
+  })
+}
+
+// 更新入职登记
+export function updateOnboardingRuzhi(application){
+  return request({url: '/application/updateOnboardingRuzhi', method: 'post', data: application})
+}
+// 更新入职登记审核状态
+export function updateOnboardingShenhe(application){
+  return request({url: '/application/updateOnboardingShenhe', method: 'post', data: application})
 }

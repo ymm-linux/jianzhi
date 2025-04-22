@@ -88,3 +88,4 @@ export function delSalaries(id) {
     method: 'delete'
   })
 }
+

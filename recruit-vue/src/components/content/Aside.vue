@@ -25,37 +25,37 @@ export default {
     return{
       asideList:[
         {
-          id:1,name:'餐饮服务',
+          id:1,name:'学术研究',
           child:[]
         },
         {
-          id:2,name:'人事/财政/财务',
+          id:2,name:'市场营销',
           child:[]
         },
         {
-          id:3,name:'超市/零售',
+          id:3,name:'技术开发',
           child:[]
         },
         {
-          id:4,name:'互联网/IT',
+          id:4,name:'文化艺术',
           child:[]
         },
         {
-          id:5,name:'销售/采购',
+          id:5,name:'校园服务',
           child:[]
         },
         {
-          id:6,name:'家政/保洁',
+          id:6,name:'创意设计',
           child:[]
         },
         {
-          id:7,name:'物流/仓储/司机',
+          id:7,name:'体育健身',
           child:[]
         },
         {
-          id:8,name:'运动/健身',
+          id:8,name:'教育辅导',
           child:[]
-        },
+        }
       ],
       categorys: []
     }
@@ -68,38 +68,39 @@ export default {
       listCategory().then(res=> {
         this.categorys = res.data
         this.categorys.forEach(item=>{
-          if(item.firstCategoryName === '餐饮服务') this.asideList[0].child.push({
+          if(item.firstCategoryName === '学术研究') this.asideList[0].child.push({
             name: item.secondCategoryName,
             id: item.categoryId
           })
-          if(item.firstCategoryName === '人事/财政/财务') this.asideList[1].child.push({
+          if(item.firstCategoryName === '市场营销') this.asideList[1].child.push({
             name: item.secondCategoryName,
             id: item.categoryId
           })
-          if(item.firstCategoryName === '超市/零售') this.asideList[2].child.push({
+          if(item.firstCategoryName === '技术开发') this.asideList[2].child.push({
             name: item.secondCategoryName,
             id: item.categoryId
           })
-          if(item.firstCategoryName === '互联网/IT') this.asideList[3].child.push({
+          if(item.firstCategoryName === '文化艺术') this.asideList[3].child.push({
             name: item.secondCategoryName,
             id: item.categoryId
           })
-          if(item.firstCategoryName === '销售/采购') this.asideList[4].child.push({
+          if(item.firstCategoryName === '校园服务') this.asideList[4].child.push({
             name: item.secondCategoryName,
             id: item.categoryId
           })
-          if(item.firstCategoryName === '家政/保洁') this.asideList[5].child.push({
+          if(item.firstCategoryName === '创意设计') this.asideList[5].child.push({
             name: item.secondCategoryName,
             id: item.categoryId
           })
-          if(item.firstCategoryName === '物流/仓储/司机') this.asideList[6].child.push({
+          if(item.firstCategoryName === '体育健身') this.asideList[6].child.push({
+              name: item.secondCategoryName,
+              id: item.categoryId
+            })
+          if(item.firstCategoryName === '教育辅导') this.asideList[7].child.push({
             name: item.secondCategoryName,
             id: item.categoryId
           })
-          if(item.firstCategoryName === '运动/健身') this.asideList[7].child.push({
-            name: item.secondCategoryName,
-            id: item.categoryId
-          })
+
         })
         // console.log(this.asideList)
       })

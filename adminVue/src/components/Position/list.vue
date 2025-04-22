@@ -31,6 +31,10 @@
           label="岗位要求">
       </el-table-column>
       <el-table-column
+          prop="salaryType"
+          label="薪资类型">
+      </el-table-column>
+      <el-table-column
           label="学历要求"
           width="180">
         <template slot-scope="scope">
@@ -53,7 +57,9 @@
       </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
-          {{scope.row.statePub?'已发布':'未发布'}}
+          <el-tag :type="getStatusType(scope.row.statePub)">
+            {{getStatusText(scope.row.statePub)}}
+          </el-tag>
         </template>
       </el-table-column>
        <el-table-column
@@ -63,12 +69,48 @@
       <el-table-column
           fixed="right"
           label="操作"
-          width="210">
+          width="280">
         <template slot-scope="scope">
-          <el-button @click="handleDel(scope.row)"  type="danger" size="mini">删除</el-button>
+          <el-button-group>
+            <el-button 
+              @click="handleEdit(scope.$index,scope.row)" 
+              type="primary" 
+              size="mini"
+              style="width: 80px">编辑</el-button>
+          
+            <el-button 
+              v-if="scope.row.statePub === 0"
+              @click="handleSubmit(scope.$index,scope.row)" 
+              type="warning" 
+              size="mini"
+              style="width: 80px">提交发布</el-button>
+            <el-button 
+              v-if="scope.row.statePub === 1"
+              @click="handleAudit(scope.$index,scope.row)" 
+              type="success" 
+              size="mini"
+              style="width: 80px">审核通过</el-button>
+            <el-button 
+              v-if="scope.row.statePub === 1"
+              @click="handleReject(scope.$index,scope.row)" 
+              type="danger" 
+              size="mini"
+              style="width: 80px">审核拒绝</el-button>
+            <el-button 
+              v-if="scope.row.statePub === 2"
+              @click="handleUnpublish(scope.$index,scope.row)" 
+              type="info" 
+              size="mini"
+              style="width: 80px">下架</el-button>
+            <el-button 
+              v-if="scope.row.statePub === 3"
+              type="info" 
+              size="mini"
+              style="width: 80px" 
+              disabled>已下架</el-button>
+          </el-button-group>
         </template>
       </el-table-column>
-    </el-table>
     </el-table>
     <div style="padding: 14px;">
       <el-pagination
@@ -89,7 +131,8 @@
 </template>
 
 <script>
-  import { listCategory, listEducation, listPosition, delPosition} from '@/api/manager'
+  import { listCategory, listEducation, listPosition, delPosition, updatePosition } from '@/api/manager'
+  import { updatePositionState } from '@/api/position'
 
   export default {
         name: "Guest",
@@ -192,10 +235,162 @@
         handleSelectionChange(){
           this.multipleSelection = val
         },
+        getStatusType(statePub) {
+          switch(statePub) {
+            case 0:
+              return 'info'
+            case 1:
+              return 'warning'
+            case 2:
+              return 'success'
+            case 3:
+              return 'danger'
+            default:
+              return 'info'
+          }
+        },
+        getStatusText(statePub) {
+          switch(statePub) {
+            case 0:
+              return '未发布'
+            case 1:
+              return '待审核'
+            case 2:
+              return '已发布'
+            case 3:
+              return '已下架'
+            default:
+              return '未知'
+          }
+        },
+        handleSubmit(index, row) {
+          this.$confirm('确认提交发布该岗位?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            const updatedPosition = {
+              positionId: row.positionId,
+              statePub: 1 // 设置为待审核状态
+            };
+            updatePositionState(updatedPosition)
+              .then(res => {
+                this.$message({
+                  type: 'success',
+                  message: '提交成功!'
+                });
+                this.getListData();
+              })
+              .catch(error => {
+                console.log(error);
+                this.$message.error('提交失败');
+              });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            });
+          });
+        },
+        handleAudit(index, row) {
+          this.$confirm('确认通过该岗位?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            const updatedPosition = {
+              positionId: row.positionId,
+              statePub: 2 // 设置为已发布状态
+            };
+            updatePositionState(updatedPosition)
+              .then(res => {
+                this.$message({
+                  type: 'success',
+                  message: '审核通过!'
+                });
+                this.getListData();
+              })
+              .catch(error => {
+                console.log(error);
+                this.$message.error('审核失败');
+              });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消审核'
+            });
+          });
+        },
+        handleReject(index, row) {
+          this.$confirm('确认拒绝该岗位?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            const updatedPosition = {
+              positionId: row.positionId,
+              statePub: 0 // 设置为未发布状态
+            };
+            updatePositionState(updatedPosition)
+              .then(res => {
+                this.$message({
+                  type: 'success',
+                  message: '已拒绝!'
+                });
+                this.getListData();
+              })
+              .catch(error => {
+                console.log(error);
+                this.$message.error('操作失败');
+              });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消操作'
+            });
+          });
+        },
+        handleUnpublish(index, row) {
+          this.$confirm('确认下架该岗位?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            const updatedPosition = {
+              positionId: row.positionId,
+              statePub: 3 // 设置为已下架状态
+            };
+            updatePositionState(updatedPosition)
+              .then(res => {
+                this.$message({
+                  type: 'success',
+                  message: '下架成功!'
+                });
+                this.getListData();
+              })
+              .catch(error => {
+                console.log(error);
+                this.$message.error('下架失败');
+              });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消下架'
+            });
+          });
+        }
       }
     }
 </script>
 
 <style scoped>
-
+.el-button-group {
+  display: flex;
+  justify-content: flex-start;
+  gap: 5px;
+}
+.el-tag {
+  width: 80px;
+  text-align: center;
+}
 </style>

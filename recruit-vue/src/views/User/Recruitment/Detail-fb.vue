@@ -15,7 +15,7 @@
               job.title
             }}</el-col>
             <el-col :span="10" class="job-salary"
-              >{{ job.salaryDown }} ~ {{ job.salaryUp }}（元/月）</el-col
+              >{{ job.salaryDown }} ~ {{ job.salaryUp }}（元/{{ job.salaryType }}）</el-col
             >
             <el-col :offset="1" :span="23" class="job-yaoqiu">
               {{ job.workProvince }}-{{ job.workCity }}

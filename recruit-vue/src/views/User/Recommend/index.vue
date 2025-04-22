@@ -62,14 +62,14 @@ export default {
     return {
       keyWords: '',
       hotJobs: [
-        { name: "服务员", id: 3 },
-        { name: "营业员", id: 79 },
-        { name: "导购", id: 90 },
-        { name: "收银", id: 7 },
-        { name: "快递员", id: 161 },
-        { name: "移动App开发助理", id: 108 },
-        { name: "Java开发助理", id: 99 },
-        { name: "运维助理", id: 101 }
+        { name: "实验室助理", id: 3 },
+        { name: "校园客户反馈收集", id: 79 },
+        { name: "校园信息收集", id: 90 },
+        { name: "校园超市", id: 7 },
+        { name: "网络管理", id: 18 },
+        { name: "图书馆管理", id: 1 },
+        { name: "技术培训课程设计", id: 99 },
+        { name: "校园活动组织", id: 2 }
       ],
       notice: {
         title: '', // 公告标题
